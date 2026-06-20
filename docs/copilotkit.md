@@ -101,20 +101,20 @@ MCP/API Gateway = tool access layer
 
 Use it when you want:
 
-* embedded AI assistant inside a React app
-* shared state between app and agent
-* agent-triggered frontend actions
-* approval flows
-* generative UI
-* faster delivery than building AG-UI UI plumbing yourself
+- embedded AI assistant inside a React app
+- shared state between app and agent
+- agent-triggered frontend actions
+- approval flows
+- generative UI
+- faster delivery than building AG-UI UI plumbing yourself
 
 Do **not** use it as the place for:
 
-* core authorization
-* audit policy
-* enterprise workflow rules
-* tool credential management
-* production change governance
+- core authorization
+- audit policy
+- enterprise workflow rules
+- tool credential management
+- production change governance
 
 Those belong behind the AG-UI gateway.
 
@@ -122,5 +122,5 @@ In one line:
 
 > CopilotKit is the React/UX acceleration layer for AG-UI-based agent applications.
 
-[1]: https://docs.showcase.copilotkit.ai/?utm_source=chatgpt.com "CopilotKit: the frontend stack for agents"
-[2]: https://learn.microsoft.com/en-us/agent-framework/integrations/ag-ui/?utm_source=chatgpt.com "AG-UI Integration with Agent Framework"
+[1]: https://docs.showcase.copilotkit.ai/?utm_source=chatgpt.com 'CopilotKit: the frontend stack for agents'
+[2]: https://learn.microsoft.com/en-us/agent-framework/integrations/ag-ui/?utm_source=chatgpt.com 'AG-UI Integration with Agent Framework'

@@ -68,27 +68,27 @@ Since your preferred stack is React + TypeScript:
 
 ### Frontend
 
-* React
-* TypeScript
-* Tailwind
-* shadcn/ui
-* TanStack Query
-* Zustand
-* AG-UI React SDK
+- React
+- TypeScript
+- Tailwind
+- shadcn/ui
+- TanStack Query
+- Zustand
+- AG-UI React SDK
 
 ### Gateway
 
-* Node.js
-* NestJS
-* SSE transport (default)
-* WebSocket (optional)
+- Node.js
+- NestJS
+- SSE transport (default)
+- WebSocket (optional)
 
 ### Agent Layer
 
-* [VoltAgent](https://voltagent.dev?utm_source=chatgpt.com)
-* [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/?utm_source=chatgpt.com)
-* [Semantic Kernel](https://github.com/microsoft/semantic-kernel?utm_source=chatgpt.com)
-* [LangGraph](https://www.langchain.com/langgraph?utm_source=chatgpt.com)
+- [VoltAgent](https://voltagent.dev?utm_source=chatgpt.com)
+- [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/?utm_source=chatgpt.com)
+- [Semantic Kernel](https://github.com/microsoft/semantic-kernel?utm_source=chatgpt.com)
+- [LangGraph](https://www.langchain.com/langgraph?utm_source=chatgpt.com)
 
 AG-UI was specifically designed to work across different agent frameworks while keeping the UI contract stable. ([GitHub][2])
 
@@ -225,9 +225,9 @@ The emerging enterprise agent stack is increasingly becoming:
 
 Where:
 
-* AG-UI = Agent ↔ Human
-* A2A = Agent ↔ Agent
-* MCP = Agent ↔ Tools
+- AG-UI = Agent ↔ Human
+- A2A = Agent ↔ Agent
+- MCP = Agent ↔ Tools
 
 This separation of concerns is emerging as a common architecture for production agent systems. ([Medium][4])
 
@@ -235,19 +235,19 @@ This separation of concerns is emerging as a common architecture for production 
 
 If I were designing Archer (your AI API Governance Platform) or the Hypercare Dashboard today, I would use:
 
-* React + TypeScript frontend
-* AG-UI for interaction
-* VoltAgent for orchestration
-* MCP for enterprise integrations
-* A2A for specialist governance agents
-* NestJS AG-UI gateway
-* PostgreSQL for conversation/state persistence
-* Redis for session/event buffering
-* OpenTelemetry for tracing
+- React + TypeScript frontend
+- AG-UI for interaction
+- VoltAgent for orchestration
+- MCP for enterprise integrations
+- A2A for specialist governance agents
+- NestJS AG-UI gateway
+- PostgreSQL for conversation/state persistence
+- Redis for session/event buffering
+- OpenTelemetry for tracing
 
 That architecture would scale from a single copilot to hundreds of specialized engineering agents while maintaining a consistent user experience and governance model.
 
-[1]: https://docs.ag-ui.com/concepts/architecture?utm_source=chatgpt.com "Core architecture - Agent User Interaction Protocol"
-[2]: https://github.com/ag-ui-protocol/ag-ui?utm_source=chatgpt.com "AG-UI: the Agent-User Interaction Protocol. Bring ..."
-[3]: https://docs.ag-ui.com/concepts/tools?utm_source=chatgpt.com "Tools - Agent User Interaction Protocol"
-[4]: https://medium.com/%40roi235/ag-ui-when-the-frontend-got-an-ai-protocol-9223cf904fc4?utm_source=chatgpt.com "AG-UI: When the Frontend Got an AI Protocol"
+[1]: https://docs.ag-ui.com/concepts/architecture?utm_source=chatgpt.com 'Core architecture - Agent User Interaction Protocol'
+[2]: https://github.com/ag-ui-protocol/ag-ui?utm_source=chatgpt.com 'AG-UI: the Agent-User Interaction Protocol. Bring ...'
+[3]: https://docs.ag-ui.com/concepts/tools?utm_source=chatgpt.com 'Tools - Agent User Interaction Protocol'
+[4]: https://medium.com/%40roi235/ag-ui-when-the-frontend-got-an-ai-protocol-9223cf904fc4?utm_source=chatgpt.com 'AG-UI: When the Frontend Got an AI Protocol'

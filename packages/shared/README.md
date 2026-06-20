@@ -4,6 +4,7 @@ Cross-cutting TypeScript with **no runtime dependencies**. The single source of 
 types crossing the UI ↔ agent boundary.
 
 **Owns**
+
 - Domain model (spec §7): `RadarRing`, `Technology`, `TechnologySignal`.
 - AG-UI event contracts (spec §9.4): the typed event union — `TOOL_CALL_START`,
   `PROGRESS`, `STATE_UPDATE`, `GENERATIVE_UI`, `APPROVAL_REQUIRED`, `FINAL_RESPONSE` — and

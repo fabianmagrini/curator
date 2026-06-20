@@ -26,12 +26,12 @@ CopilotKit web app  ──AG-UI (SSE/WS)──►  AG-UI Gateway  ──►  Vol
    (apps/web)                              (apps/gateway)      (packages/agents)            GitHub · Jira · metrics
 ```
 
-| Layer | Package | Responsibility | Stack |
-| ----- | ------- | -------------- | ----- |
-| Generative UX | `apps/web` | Chat, generative UI, shared state, HITL prompts | React, TypeScript, Vite, Tailwind, shadcn/ui, TanStack Query, Zustand, **CopilotKit** |
-| Control plane | `apps/gateway` | AuthN/AuthZ, sessions, event routing & persistence, audit, rate limiting, approval brokering | Node.js, **NestJS**, AG-UI server, SSE (WS optional) |
-| Agent runtime | `packages/agents` | Multi-agent evaluation, debate, consensus, scoring, workflows | **VoltAgent** (TypeScript), VoltOps for tracing |
-| Shared | `packages/shared` | Cross-cutting TS types, AG-UI event contracts, radar domain model | TypeScript only, no runtime deps |
+| Layer         | Package           | Responsibility                                                                               | Stack                                                                                 |
+| ------------- | ----------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Generative UX | `apps/web`        | Chat, generative UI, shared state, HITL prompts                                              | React, TypeScript, Vite, Tailwind, shadcn/ui, TanStack Query, Zustand, **CopilotKit** |
+| Control plane | `apps/gateway`    | AuthN/AuthZ, sessions, event routing & persistence, audit, rate limiting, approval brokering | Node.js, **NestJS**, AG-UI server, SSE (WS optional)                                  |
+| Agent runtime | `packages/agents` | Multi-agent evaluation, debate, consensus, scoring, workflows                                | **VoltAgent** (TypeScript), VoltOps for tracing                                       |
+| Shared        | `packages/shared` | Cross-cutting TS types, AG-UI event contracts, radar domain model                            | TypeScript only, no runtime deps                                                      |
 
 ### Non-negotiable design rules
 
@@ -58,7 +58,7 @@ CopilotKit web app  ──AG-UI (SSE/WS)──►  AG-UI Gateway  ──►  Vol
 ├── tsconfig.base.json       # shared strict TS config; each package extends it
 ├── eslint.config.js         # flat ESLint config (typescript-eslint + prettier)
 ├── vitest.config.ts         # root Vitest config
-├── .github/workflows/ci.yml # CI: install → build → typecheck → lint → test
+├── .github/workflows/ci.yml # CI: build → typecheck → lint → format → test
 ├── docs/
 │   ├── spec.md              # full product/technical spec (source of truth)
 │   ├── ag-ui-reference-architecture.md
@@ -89,18 +89,24 @@ boundaries — read it before adding code there.
   `packages/agents` or `apps/gateway` source. Cross-layer communication is via AG-UI.
 - **Tests:** colocate `*.test.ts(x)` next to source; **Vitest** is the runner.
 - **Commits:** small, scoped, conventional-style (`feat:`, `fix:`, `docs:`, `chore:`).
+- **Branching model — commit straight to `main`.** While this is a solo/greenfield repo we
+  do **not** use feature branches or PRs: run `pnpm verify` locally, then commit and push to
+  `main`. CI re-runs the same checks on push. Keep `main` green; if a bad commit lands, fix
+  it with a follow-up commit (revert-forward) rather than rewriting pushed history. Switch to
+  PR-based review with branch protection when a second contributor (human or autonomous
+  agent landing unreviewed changes) joins.
 
 ### Scripts (run from the repo root)
 
-| Command | What |
-| ------- | ---- |
-| `pnpm install` | Install workspace dependencies |
-| `pnpm build` | Build all packages in topological order |
-| `pnpm typecheck` | `tsc --noEmit` across every package |
-| `pnpm lint` / `pnpm format` | ESLint / Prettier |
-| `pnpm test` | Run Vitest once (`pnpm test:watch` to watch) |
-| `pnpm verify` | build + typecheck + lint + test (what CI runs) |
-| `pnpm dev:gateway` / `pnpm dev:web` | Run the gateway / web app in watch mode |
+| Command                             | What                                                          |
+| ----------------------------------- | ------------------------------------------------------------- |
+| `pnpm install`                      | Install workspace dependencies                                |
+| `pnpm build`                        | Build all packages in topological order                       |
+| `pnpm typecheck`                    | `tsc --noEmit` across every package                           |
+| `pnpm lint` / `pnpm format`         | ESLint / Prettier                                             |
+| `pnpm test`                         | Run Vitest once (`pnpm test:watch` to watch)                  |
+| `pnpm verify`                       | build + typecheck + lint + format:check + test (what CI runs) |
+| `pnpm dev:gateway` / `pnpm dev:web` | Run the gateway / web app in watch mode                       |
 
 > The shared package is consumed from its built `dist` for typecheck/build, and aliased to
 > source for Vitest and Vite dev — so run `pnpm build` (or at least build `@curator/shared`)

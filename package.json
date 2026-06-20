@@ -20,7 +20,7 @@
     "test:watch": "vitest",
     "dev:gateway": "pnpm --filter @curator/gateway dev",
     "dev:web": "pnpm --filter @curator/web dev",
-    "verify": "pnpm build && pnpm typecheck && pnpm lint && pnpm test"
+    "verify": "pnpm build && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

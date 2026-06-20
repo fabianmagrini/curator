@@ -6,9 +6,9 @@ The **Tech Radar Curator** is an AI-powered, agent-driven system built using **V
 
 Its goal is to:
 
-* Reduce **opinion-driven** or ad-hoc technology choices
-* Increase **transparency and consistency** in tech decisions
-* Provide a **living Tech Radar** with clear rationale, evidence, and ownership
+- Reduce **opinion-driven** or ad-hoc technology choices
+- Increase **transparency and consistency** in tech decisions
+- Provide a **living Tech Radar** with clear rationale, evidence, and ownership
 
 The system mirrors how mature engineering orgs (e.g. Thoughtworks-style radars) reason about technology, but automates the heavy lifting.
 
@@ -16,10 +16,10 @@ The system mirrors how mature engineering orgs (e.g. Thoughtworks-style radars) 
 
 ## 2. Target Users
 
-* **Principal / Staff Engineers** – reviewing and shaping technical direction
-* **Platform & Architecture Teams** – governing standards and guardrails
-* **Engineering Managers** – understanding risk and investment
-* **New Engineers** – learning *why* technologies are adopted or discouraged
+- **Principal / Staff Engineers** – reviewing and shaping technical direction
+- **Platform & Architecture Teams** – governing standards and guardrails
+- **Engineering Managers** – understanding risk and investment
+- **New Engineers** – learning _why_ technologies are adopted or discouraged
 
 ---
 
@@ -27,17 +27,17 @@ The system mirrors how mature engineering orgs (e.g. Thoughtworks-style radars) 
 
 ### In Scope
 
-* Automated discovery of technology signals
-* Multi-agent evaluation and debate
-* Structured Tech Radar outputs (Adopt / Trial / Assess / Hold)
-* Traceable reasoning and evidence
-* Human-in-the-loop approval
+- Automated discovery of technology signals
+- Multi-agent evaluation and debate
+- Structured Tech Radar outputs (Adopt / Trial / Assess / Hold)
+- Traceable reasoning and evidence
+- Human-in-the-loop approval
 
 ### Out of Scope (Initially)
 
-* Automatic enforcement (this is advisory, not policy)
-* Real-time performance benchmarking
-* Vendor procurement workflows
+- Automatic enforcement (this is advisory, not policy)
+- Real-time performance benchmarking
+- Vendor procurement workflows
 
 ---
 
@@ -54,11 +54,11 @@ The system mirrors how mature engineering orgs (e.g. Thoughtworks-style radars) 
 
 ### 4.2 Technology Types
 
-* Languages & Frameworks
-* Platforms & Cloud Services
-* Libraries & SDKs
-* Tools (CI/CD, Observability, DevEx)
-* Architectural Patterns
+- Languages & Frameworks
+- Platforms & Cloud Services
+- Libraries & SDKs
+- Tools (CI/CD, Observability, DevEx)
+- Architectural Patterns
 
 ---
 
@@ -111,12 +111,12 @@ The Curator is organized as a layered, event-driven stack. A **generative UI** f
 
 **Layered responsibilities** (per the AG-UI reference architecture):
 
-| Layer | Responsibility | Implementation |
-| ----- | -------------- | -------------- |
-| **CopilotKit** | Agentic UX: chat, generative UI, shared state, HITL prompts | React UX layer only |
-| **AG-UI Gateway** | Enterprise control plane: auth, audit, session/event persistence, approval policy | NestJS gateway |
-| **Agent Runtime** | Reasoning, multi-agent debate, scoring workflows | VoltAgent |
-| **MCP / API Gateway** | Governed tool access to enterprise systems | MCP servers |
+| Layer                 | Responsibility                                                                    | Implementation      |
+| --------------------- | --------------------------------------------------------------------------------- | ------------------- |
+| **CopilotKit**        | Agentic UX: chat, generative UI, shared state, HITL prompts                       | React UX layer only |
+| **AG-UI Gateway**     | Enterprise control plane: auth, audit, session/event persistence, approval policy | NestJS gateway      |
+| **Agent Runtime**     | Reasoning, multi-agent debate, scoring workflows                                  | VoltAgent           |
+| **MCP / API Gateway** | Governed tool access to enterprise systems                                        | MCP servers         |
 
 > Design rule: CopilotKit is the **UX acceleration layer**, not the control plane. Authorization, audit, approval policy, and tool-credential management live behind the AG-UI gateway — never in the browser.
 
@@ -146,18 +146,18 @@ Published Tech Radar
 
 **Responsibilities**
 
-* Detect technology usage and discussion signals
+- Detect technology usage and discussion signals
 
 **Inputs**
 
-* Git repositories (package.json, pom.xml, go.mod, etc.)
-* RFCs / ADRs
-* Jira epics and tickets
-* Production usage metrics
+- Git repositories (package.json, pom.xml, go.mod, etc.)
+- RFCs / ADRs
+- Jira epics and tickets
+- Production usage metrics
 
 **Outputs**
 
-* Normalized `TechnologySignal` objects
+- Normalized `TechnologySignal` objects
 
 ---
 
@@ -165,14 +165,14 @@ Published Tech Radar
 
 **Evaluates**
 
-* Developer productivity
-* Delivery speed
-* Business enablement
+- Developer productivity
+- Delivery speed
+- Business enablement
 
 **Questions Answered**
 
-* Does this reduce cognitive load?
-* Does it enable faster outcomes?
+- Does this reduce cognitive load?
+- Does it enable faster outcomes?
 
 ---
 
@@ -180,14 +180,14 @@ Published Tech Radar
 
 **Evaluates**
 
-* Security posture
-* Maturity & ecosystem health
-* Operational risk
+- Security posture
+- Maturity & ecosystem health
+- Operational risk
 
 **Frameworks Used**
 
-* STRIDE
-* Supply-chain risk heuristics
+- STRIDE
+- Supply-chain risk heuristics
 
 ---
 
@@ -195,9 +195,9 @@ Published Tech Radar
 
 **Evaluates**
 
-* Licensing cost
-* Cloud / runtime cost
-* Switching and exit cost
+- Licensing cost
+- Cloud / runtime cost
+- Switching and exit cost
 
 ---
 
@@ -205,9 +205,9 @@ Published Tech Radar
 
 **Evaluates**
 
-* Observability support
-* On-call burden
-* Debuggability
+- Observability support
+- On-call burden
+- Debuggability
 
 ---
 
@@ -215,9 +215,9 @@ Published Tech Radar
 
 **Evaluates**
 
-* Alignment with target architecture
-* Skills availability
-* Long-term roadmap fit
+- Alignment with target architecture
+- Skills availability
+- Long-term roadmap fit
 
 ---
 
@@ -225,9 +225,9 @@ Published Tech Radar
 
 **Responsibilities**
 
-* Aggregate agent outputs
-* Resolve conflicts
-* Produce final recommendation
+- Aggregate agent outputs
+- Resolve conflicts
+- Produce final recommendation
 
 **Output**
 
@@ -289,35 +289,35 @@ The Curator's interface is built with **CopilotKit**, the React/UX acceleration 
 
 ### 9.1 Why Generative UI Here
 
-Tech-radar decisions are reasoning artifacts, not static rows. Generative UI lets the agents *show their work* in context:
+Tech-radar decisions are reasoning artifacts, not static rows. Generative UI lets the agents _show their work_ in context:
 
-* The Consensus Agent streams a **ring-change proposal card** as it forms its recommendation.
-* The Risk/Value/Cost agents render **per-dimension evidence panels** inline as they complete.
-* A disagreement triggers an **agent-debate view** so reviewers see the dissent, not just the verdict.
-* Approval prompts appear as **interactive HITL cards** rather than separate modals.
+- The Consensus Agent streams a **ring-change proposal card** as it forms its recommendation.
+- The Risk/Value/Cost agents render **per-dimension evidence panels** inline as they complete.
+- A disagreement triggers an **agent-debate view** so reviewers see the dissent, not just the verdict.
+- Approval prompts appear as **interactive HITL cards** rather than separate modals.
 
 ### 9.2 CopilotKit Primitives
 
-| Primitive | Use in the Curator |
-| --------- | ------------------ |
-| `CopilotSidebar` / chat UI | Conversational entry point: "Why is Kafka in Hold?", "Re-evaluate gRPC" |
-| `useCopilotReadable` | Expose current UI state to the agents: selected technology, active ring filter, quadrant, date range, the radar draft under review |
-| `useCopilotAction` | Let agents drive the UI: open a technology detail, filter to a ring/quadrant, highlight evidence, scroll the audit trail |
-| Generative UI (`render`) | Agent-rendered domain components streamed as AG-UI events (see 9.3) |
-| Human-in-the-loop | `renderAndWaitForResponse` approval cards for ring changes (see Section 10) |
+| Primitive                  | Use in the Curator                                                                                                                 |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `CopilotSidebar` / chat UI | Conversational entry point: "Why is Kafka in Hold?", "Re-evaluate gRPC"                                                            |
+| `useCopilotReadable`       | Expose current UI state to the agents: selected technology, active ring filter, quadrant, date range, the radar draft under review |
+| `useCopilotAction`         | Let agents drive the UI: open a technology detail, filter to a ring/quadrant, highlight evidence, scroll the audit trail           |
+| Generative UI (`render`)   | Agent-rendered domain components streamed as AG-UI events (see 9.3)                                                                |
+| Human-in-the-loop          | `renderAndWaitForResponse` approval cards for ring changes (see Section 10)                                                        |
 
 ### 9.3 Generative UI Component Catalog
 
 Streamed by the agents over AG-UI and rendered by CopilotKit:
 
-| Component | Triggered by | Renders |
-| --------- | ------------ | ------- |
-| **RingChangeProposalCard** | Consensus & Scoring Agent | Technology, proposed ring + delta from current, confidence, key drivers, key risks, review date, Approve / Modify / Reject |
-| **DimensionEvidencePanel** | Each evaluation agent | Dimension score, supporting signals, source citations (repo, RFC, Jira, metric) with deep links |
-| **AgentDebateView** | Consensus Agent on conflict | Side-by-side agent positions, points of disagreement, how consensus was (or wasn't) reached |
-| **RadarVisualization** | Planner / Curator Agent | Interactive radar (Adopt/Trial/Assess/Hold × quadrants) with the proposed move animated |
-| **SignalTimeline** | Signal Ingestion Agent | Chronological signal strength for a technology with source breakdown |
-| **DriftAlert** | Governance / Observability | Decision-volatility warning when a technology has churned rings repeatedly |
+| Component                  | Triggered by                | Renders                                                                                                                    |
+| -------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **RingChangeProposalCard** | Consensus & Scoring Agent   | Technology, proposed ring + delta from current, confidence, key drivers, key risks, review date, Approve / Modify / Reject |
+| **DimensionEvidencePanel** | Each evaluation agent       | Dimension score, supporting signals, source citations (repo, RFC, Jira, metric) with deep links                            |
+| **AgentDebateView**        | Consensus Agent on conflict | Side-by-side agent positions, points of disagreement, how consensus was (or wasn't) reached                                |
+| **RadarVisualization**     | Planner / Curator Agent     | Interactive radar (Adopt/Trial/Assess/Hold × quadrants) with the proposed move animated                                    |
+| **SignalTimeline**         | Signal Ingestion Agent      | Chronological signal strength for a technology with source breakdown                                                       |
+| **DriftAlert**             | Governance / Observability  | Decision-volatility warning when a technology has churned rings repeatedly                                                 |
 
 ### 9.4 AG-UI Event Flow
 
@@ -338,9 +338,9 @@ Events are typed (messages, tool calls, state changes, lifecycle, approvals) and
 
 ### 9.5 Shared State Contract
 
-* `useCopilotReadable` publishes the **current radar draft and selection context** to the agents, so a follow-up like "compare it to its alternatives" has context without re-stating it.
-* `useCopilotAction` handlers are **frontend tools** registered with the gateway; the agent can invoke them but the gateway authorizes and audits each call.
-* All state mutations that change a published radar route back through the **AG-UI gateway** (Section 5) — the browser never writes radar state directly.
+- `useCopilotReadable` publishes the **current radar draft and selection context** to the agents, so a follow-up like "compare it to its alternatives" has context without re-stating it.
+- `useCopilotAction` handlers are **frontend tools** registered with the gateway; the agent can invoke them but the gateway authorizes and audits each call.
+- All state mutations that change a published radar route back through the **AG-UI gateway** (Section 5) — the browser never writes radar state directly.
 
 ---
 
@@ -367,11 +367,11 @@ Approve · Modify · Reject  (+ dissent comment)
 Agent continues → radar published → audit entry written
 ```
 
-* **Mandatory approval** for every ring change — the agent **blocks** on the AG-UI approval event; it cannot self-publish.
-* **Editable rationale text** captured in the approval card and persisted as the official decision record.
-* **Comment and dissent capture** — reviewers can register disagreement even when approving.
-* **Full audit trail** — every approval event, edit, and rejection is persisted by the gateway, independent of CopilotKit (the UX layer holds no authority).
-* **Approval policy lives in the gateway**, not the browser: who may approve which quadrants/rings is enforced server-side.
+- **Mandatory approval** for every ring change — the agent **blocks** on the AG-UI approval event; it cannot self-publish.
+- **Editable rationale text** captured in the approval card and persisted as the official decision record.
+- **Comment and dissent capture** — reviewers can register disagreement even when approving.
+- **Full audit trail** — every approval event, edit, and rejection is persisted by the gateway, independent of CopilotKit (the UX layer holds no authority).
+- **Approval policy lives in the gateway**, not the browser: who may approve which quadrants/rings is enforced server-side.
 
 ---
 
@@ -379,32 +379,32 @@ Agent continues → radar published → audit entry written
 
 Using **VoltOps** for agent-side tracing and the **AG-UI gateway** for the interaction record:
 
-* Agent decision traces (VoltOps)
-* Input/output replay (VoltOps)
-* Drift detection (decision volatility) — surfaced as `DriftAlert` generative UI
-* Explainability views per technology — rendered as `DimensionEvidencePanel` / `AgentDebateView`
-* Full AG-UI event log (requests, tool calls, approvals) persisted at the gateway
-* OpenTelemetry tracing spanning UI → gateway → agents → MCP
+- Agent decision traces (VoltOps)
+- Input/output replay (VoltOps)
+- Drift detection (decision volatility) — surfaced as `DriftAlert` generative UI
+- Explainability views per technology — rendered as `DimensionEvidencePanel` / `AgentDebateView`
+- Full AG-UI event log (requests, tool calls, approvals) persisted at the gateway
+- OpenTelemetry tracing spanning UI → gateway → agents → MCP
 
 ---
 
 ## 12. Security & Access Control
 
-* Read-only access for most engineers
-* Write / approve access for architecture group
-* Immutable history of radar changes
-* **Authentication and authorization enforced at the AG-UI gateway**, not in CopilotKit — frontend tools (`useCopilotAction`) are authorized server-side per call
-* Tool credentials (GitHub, Jira, metrics) held by the MCP gateway; never exposed to the browser
+- Read-only access for most engineers
+- Write / approve access for architecture group
+- Immutable history of radar changes
+- **Authentication and authorization enforced at the AG-UI gateway**, not in CopilotKit — frontend tools (`useCopilotAction`) are authorized server-side per call
+- Tool credentials (GitHub, Jira, metrics) held by the MCP gateway; never exposed to the browser
 
 ---
 
 ## 13. Success Metrics
 
-* Reduction in ad-hoc tech introductions
-* Improved onboarding comprehension
-* Fewer production incidents from immature tech
-* Positive qualitative feedback from engineers
-* Faster reviewer comprehension via generative UI (time-to-decision per proposal)
+- Reduction in ad-hoc tech introductions
+- Improved onboarding comprehension
+- Fewer production incidents from immature tech
+- Positive qualitative feedback from engineers
+- Faster reviewer comprehension via generative UI (time-to-decision per proposal)
 
 ---
 
@@ -421,22 +421,22 @@ Using **VoltOps** for agent-side tracing and the **AG-UI gateway** for the inter
 
 ### VoltAgent (Agent Runtime)
 
-* Deterministic, auditable workflows
-* Multi-agent debate patterns
-* Strong observability (VoltOps)
-* TypeScript-native for platform teams
+- Deterministic, auditable workflows
+- Multi-agent debate patterns
+- Strong observability (VoltOps)
+- TypeScript-native for platform teams
 
 ### AG-UI (Agent ↔ Human Protocol)
 
-* Standardizes UI ↔ agent communication via typed, streaming events
-* Decouples the UI contract from the agent framework — VoltAgent is swappable without UI rewrites
-* First-class human-approval and frontend-tool support for change governance
+- Standardizes UI ↔ agent communication via typed, streaming events
+- Decouples the UI contract from the agent framework — VoltAgent is swappable without UI rewrites
+- First-class human-approval and frontend-tool support for change governance
 
 ### CopilotKit (Generative UX Layer)
 
-* Ships chat, generative UI, shared state, and HITL flows on AG-UI backends
-* Avoids hand-building AG-UI UI plumbing — faster delivery
-* Kept strictly as the UX layer; enterprise control stays in the gateway
+- Ships chat, generative UI, shared state, and HITL flows on AG-UI backends
+- Avoids hand-building AG-UI UI plumbing — faster delivery
+- Kept strictly as the UX layer; enterprise control stays in the gateway
 
 ### Protocol Stack
 
@@ -444,7 +444,7 @@ Using **VoltOps** for agent-side tracing and the **AG-UI gateway** for the inter
 User Interface  ──AG-UI──►  Agent Runtime  ──A2A──►  Specialist Agents  ──MCP──►  Enterprise Systems
 ```
 
-* **AG-UI** = Agent ↔ Human · **A2A** = Agent ↔ Agent · **MCP** = Agent ↔ Tools
+- **AG-UI** = Agent ↔ Human · **A2A** = Agent ↔ Agent · **MCP** = Agent ↔ Tools
 
 ---
 

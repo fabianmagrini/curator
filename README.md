@@ -18,13 +18,13 @@ CopilotKit web app ──AG-UI──► AG-UI Gateway ──► VoltAgent runtim
 
 ## Repo layout
 
-| Path | What |
-| ---- | ---- |
-| `apps/web` | CopilotKit generative UI |
-| `apps/gateway` | NestJS AG-UI gateway (control plane) |
-| `packages/agents` | VoltAgent multi-agent runtime |
-| `packages/shared` | Shared TS types & AG-UI contracts |
-| `docs/` | Spec, architecture references, backlog, [ADRs](docs/adr/) |
+| Path              | What                                                      |
+| ----------------- | --------------------------------------------------------- |
+| `apps/web`        | CopilotKit generative UI                                  |
+| `apps/gateway`    | NestJS AG-UI gateway (control plane)                      |
+| `packages/agents` | VoltAgent multi-agent runtime                             |
+| `packages/shared` | Shared TS types & AG-UI contracts                         |
+| `docs/`           | Spec, architecture references, backlog, [ADRs](docs/adr/) |
 
 ## Getting started
 
