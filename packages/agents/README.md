@@ -16,4 +16,11 @@ reaches consensus, and proposes radar changes — emitting typed AG-UI events as
 - **Blocks on approval**: a ring change emits `APPROVAL_REQUIRED` and waits; it cannot
   self-publish. The gateway brokers the human decision.
 
+## Status
+
+Phase 0: a **no-op planner** (`src/planner.ts`) emits a representative AG-UI stream
+(`TOOL_CALL_START` → `GENERATIVE_UI` → `APPROVAL_REQUIRED` → `FINAL_RESPONSE`) as an
+`AsyncGenerator<AgUiEvent>`. The real VoltAgent workflow + VoltOps tracing plug in behind
+that same contract — see the integration note at the top of `planner.ts`.
+
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §6, §9.4, §10`.

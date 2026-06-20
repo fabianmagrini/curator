@@ -24,7 +24,7 @@ CopilotKit web app ──AG-UI──► AG-UI Gateway ──► VoltAgent runtim
 | `apps/gateway` | NestJS AG-UI gateway (control plane) |
 | `packages/agents` | VoltAgent multi-agent runtime |
 | `packages/shared` | Shared TS types & AG-UI contracts |
-| `docs/` | Spec, architecture references, backlog |
+| `docs/` | Spec, architecture references, backlog, [ADRs](docs/adr/) |
 
 ## Getting started
 
@@ -47,7 +47,9 @@ curl -N "http://localhost:4000/agui/stream?prompt=Should%20we%20move%20gRPC%20to
 ## For AI coding agents
 
 Start with **[`AGENTS.md`](AGENTS.md)** (canonical context), then the task
-**[backlog](docs/backlog.md)** and the full **[spec](docs/spec.md)**.
+**[backlog](docs/backlog.md)** and the full **[spec](docs/spec.md)**. The
+**[ADRs](docs/adr/)** record why the architecture is the way it is — consult them before
+changing cross-cutting structure.
 
 > Status: **Phase 0 complete** — pnpm workspace, strict TS, ESLint/Prettier, Vitest, CI, the
 > four scaffolded packages, and an end-to-end AG-UI SSE smoke are in place. Phase 1 is next.

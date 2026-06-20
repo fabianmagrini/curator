@@ -18,4 +18,12 @@ UI** streamed over AG-UI.
   Those live behind the AG-UI gateway. The browser never writes published radar state.
 - Talks to the backend exclusively via the **AG-UI protocol** (SSE; WS optional).
 
+## Status
+
+Phase 0: Vite + React + Tailwind shell with an AG-UI SSE client (`src/lib/agui-client.ts`)
+and a smoke UI that renders the raw event stream from the gateway. shadcn-ready (`cn` helper
+in `src/lib/utils.ts`, `@/*` path alias) but no components installed yet. CopilotKit
+integration and the generative-UI components land in Phase 1. Run with `pnpm dev:web`
+(port 5173; set `VITE_GATEWAY_URL` to point at the gateway).
+
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §9`.

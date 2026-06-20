@@ -17,4 +17,11 @@ agent runtime over AG-UI.
 - Frontend tools (`useCopilotAction`) are authorized and audited here, per call.
 - Tool credentials are held here / in MCP, never sent to the browser.
 
+## Status
+
+Phase 0: NestJS app with `GET /health` and an SSE `GET /agui/stream?prompt=…` endpoint that
+relays the agents' AG-UI event stream. Run with `pnpm dev:gateway` (defaults to port 4000;
+override with `PORT` / `WEB_ORIGIN`). Auth, persistence, audit, and approval brokering are
+Phase 1–2.
+
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §5, §10, §11, §12`.

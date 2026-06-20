@@ -13,4 +13,10 @@ types crossing the UI ↔ agent boundary.
 producer (`packages/agents`) and consumer (`apps/web`) in the same change. Nothing
 downstream redefines these types.
 
+## Status
+
+Implemented: domain model (`domain.ts`), AG-UI event union (`agui.ts`), generative-UI
+payloads (`generative-ui.ts`), re-exported from `src/index.ts`. No runtime dependencies.
+Build to `dist` with `pnpm --filter @curator/shared build`.
+
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §7, §9`.

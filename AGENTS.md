@@ -13,8 +13,11 @@ backend evaluates technologies across Value, Risk, Cost, Operability, and Strate
 reaches consensus, and proposes radar changes for **human approval**. The UI renders the
 agents' reasoning as **generative UI** rather than static tables.
 
-This is currently a **greenfield repo**: the docs and skeleton exist; the code does not.
-Your job as an agent is to fill in the packages following the architecture below.
+**Status:** Phase 0 of the backlog is complete — the pnpm workspace, strict TypeScript,
+ESLint/Prettier, Vitest, CI, and runnable skeletons for all four packages are in place,
+with an end-to-end AG-UI SSE smoke path (web → gateway → agents). Your job as an agent is
+to flesh out the packages following the architecture below; start from `docs/backlog.md`
+Phase 1.
 
 ## Architecture (layered, event-driven)
 
@@ -50,17 +53,24 @@ CopilotKit web app  ──AG-UI (SSE/WS)──►  AG-UI Gateway  ──►  Vol
 ```
 .
 ├── AGENTS.md                # this file — agent context (canonical)
+├── package.json             # workspace root: build/typecheck/lint/test/dev scripts
+├── pnpm-workspace.yaml      # workspace globs (apps/*, packages/*)
+├── tsconfig.base.json       # shared strict TS config; each package extends it
+├── eslint.config.js         # flat ESLint config (typescript-eslint + prettier)
+├── vitest.config.ts         # root Vitest config
+├── .github/workflows/ci.yml # CI: install → build → typecheck → lint → test
 ├── docs/
 │   ├── spec.md              # full product/technical spec (source of truth)
 │   ├── ag-ui-reference-architecture.md
 │   ├── copilotkit.md
-│   └── backlog.md           # phased, agent-sized task breakdown
+│   ├── backlog.md           # phased, agent-sized task breakdown
+│   └── adr/                 # architecture decision records (why the architecture is so)
 ├── apps/
-│   ├── web/                 # CopilotKit generative UI  (to scaffold)
-│   └── gateway/             # NestJS AG-UI gateway       (to scaffold)
+│   ├── web/                 # CopilotKit generative UI (Vite + React + Tailwind)
+│   └── gateway/             # NestJS AG-UI gateway (/health, SSE /agui/stream)
 └── packages/
-    ├── agents/              # VoltAgent multi-agent runtime (to scaffold)
-    └── shared/              # shared TS types / AG-UI contracts (to scaffold)
+    ├── agents/              # VoltAgent multi-agent runtime (no-op planner today)
+    └── shared/              # shared TS types / AG-UI contracts
 ```
 
 Each `apps/*` and `packages/*` directory has a `README.md` describing its scope and
@@ -69,16 +79,32 @@ boundaries — read it before adding code there.
 ## Conventions
 
 - **Language:** TypeScript everywhere; `strict` mode on. No `any` without justification.
-- **Package manager / workspace:** intended to be a **pnpm workspace** monorepo (not yet
-  initialized). When you scaffold tooling, prefer pnpm + a single `tsconfig.base.json`.
+- **Package manager / workspace:** **pnpm workspace** monorepo (pnpm 10+, Node 20+). Every
+  package extends the single root `tsconfig.base.json`.
 - **Domain types are shared.** Radar rings, `Technology`, `TechnologySignal`, and AG-UI
   event types live in `packages/shared` and are imported, never redefined.
 - **Naming:** PascalCase for React components and types, camelCase for functions/vars,
   kebab-case for file names except React components (PascalCase `.tsx`).
 - **Boundaries:** `apps/web` may depend on `packages/shared` only — never on
   `packages/agents` or `apps/gateway` source. Cross-layer communication is via AG-UI.
-- **Tests:** colocate `*.test.ts(x)` next to source; Vitest is the intended runner.
+- **Tests:** colocate `*.test.ts(x)` next to source; **Vitest** is the runner.
 - **Commits:** small, scoped, conventional-style (`feat:`, `fix:`, `docs:`, `chore:`).
+
+### Scripts (run from the repo root)
+
+| Command | What |
+| ------- | ---- |
+| `pnpm install` | Install workspace dependencies |
+| `pnpm build` | Build all packages in topological order |
+| `pnpm typecheck` | `tsc --noEmit` across every package |
+| `pnpm lint` / `pnpm format` | ESLint / Prettier |
+| `pnpm test` | Run Vitest once (`pnpm test:watch` to watch) |
+| `pnpm verify` | build + typecheck + lint + test (what CI runs) |
+| `pnpm dev:gateway` / `pnpm dev:web` | Run the gateway / web app in watch mode |
+
+> The shared package is consumed from its built `dist` for typecheck/build, and aliased to
+> source for Vitest and Vite dev — so run `pnpm build` (or at least build `@curator/shared`)
+> before typechecking the consumers.
 
 ## Working agreements for agents
 
@@ -89,9 +115,11 @@ boundaries — read it before adding code there.
   audit, or radar writes in `apps/web`, that's a signal it belongs in `apps/gateway`.
 - **Keep AG-UI event types in `packages/shared`** and update both producer (agents) and
   consumer (web) together.
-- **No build tooling exists yet.** The first scaffolding tasks (see backlog Phase 0)
-  establish pnpm workspace, TS config, lint/format, and runnable stubs. Until then,
-  there are no `build`/`test`/`dev` scripts to run.
+- **Consult the ADRs before changing cross-cutting structure.** The decisions in
+  [`docs/adr/`](docs/adr/) (e.g. AG-UI as the sole UI↔agent contract, control plane in the
+  gateway, mandatory HITL approval) are binding. To change one, write a new ADR that
+  supersedes it — don't quietly contradict it.
+- **Run `pnpm verify` before you commit.** It mirrors CI; keep `main` green.
 - When you add scripts/tooling, document them in the relevant package `README.md` and
   update this file's conventions if they change.
 
