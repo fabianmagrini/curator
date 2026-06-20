@@ -129,6 +129,27 @@ boundaries — read it before adding code there.
 - When you add scripts/tooling, document them in the relevant package `README.md` and
   update this file's conventions if they change.
 
+### Architecture Decision Records
+
+Write an ADR in `docs/adr/` whenever a decision meets any of these criteria:
+
+- A library or framework was chosen over meaningful alternatives
+- An architectural pattern was adopted that constrains how future code must be written
+- A workaround was introduced for a third-party limitation (the _why_ would otherwise only
+  live in a commit message)
+- A previously accepted decision is being reversed or superseded
+
+**Process:**
+
+1. Copy `docs/adr/0000-adr-template.md` to `docs/adr/NNNN-short-title.md` (next number).
+2. Fill in Context (what problem led here), Decision (what was chosen and why), and
+   Consequences (trade-offs accepted).
+3. Add a row to the index table in `docs/adr/README.md`.
+4. If the ADR supersedes an existing one, update the old ADR's status line.
+
+An ADR does not need to be long. Two or three sentences per section is enough if the
+reasoning is clear. The goal is to make the _why_ recoverable without reading git history.
+
 ## Glossary
 
 - **AG-UI** — Agent ↔ Human protocol (typed streaming events: messages, tool calls, state
