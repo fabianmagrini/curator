@@ -11,17 +11,19 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
 
 ## Phase 0 — Foundation (enable the monorepo)
 
-- [ ] `[repo]` Initialize pnpm workspace (`pnpm-workspace.yaml`, root `package.json`).
-- [ ] `[repo]` Add `tsconfig.base.json` (strict) and per-package `tsconfig.json` extends.
-- [ ] `[repo]` Add ESLint + Prettier + EditorConfig; wire `lint`/`format` scripts.
-- [ ] `[repo]` Add Vitest at the root with per-package config.
-- [ ] `[repo]` Add CI workflow (typecheck + lint + test) — `.github/workflows/ci.yml`.
-- [ ] `[shared]` Scaffold `packages/shared` with domain types: `RadarRing`, `Technology`,
+- [x] `[repo]` Initialize pnpm workspace (`pnpm-workspace.yaml`, root `package.json`).
+- [x] `[repo]` Add `tsconfig.base.json` (strict) and per-package `tsconfig.json` extends.
+- [x] `[repo]` Add ESLint + Prettier + EditorConfig; wire `lint`/`format` scripts.
+- [x] `[repo]` Add Vitest at the root with per-package config.
+- [x] `[repo]` Add CI workflow (typecheck + lint + test) — `.github/workflows/ci.yml`.
+- [x] `[shared]` Scaffold `packages/shared` with domain types: `RadarRing`, `Technology`,
       `TechnologySignal` (spec §7) and the AG-UI event union (spec §9.4).
-- [ ] `[web]` Scaffold Vite + React + TS + Tailwind + shadcn/ui app shell.
-- [ ] `[gw]` Scaffold NestJS app with a health route and SSE endpoint stub.
-- [ ] `[agents]` Scaffold VoltAgent project with a no-op planner agent + VoltOps wiring.
-- [ ] `[repo]` End-to-end smoke: web connects to gateway, gateway streams one AG-UI event.
+- [x] `[web]` Scaffold Vite + React + TS + Tailwind app shell (shadcn-ready: `cn` util,
+      `@/*` alias). _shadcn/ui component install deferred to Phase 1._
+- [x] `[gw]` Scaffold NestJS app with a health route and SSE endpoint stub.
+- [x] `[agents]` Scaffold a no-op planner agent emitting the AG-UI stream.
+      _Actual VoltAgent/VoltOps wiring marked as an integration point in `planner.ts`._
+- [x] `[repo]` End-to-end smoke: web connects to gateway, gateway streams AG-UI events.
 
 ## Phase 1 — Internal radar + read-only generative UI (spec §14 Phase 1)
 

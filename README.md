@@ -26,10 +26,28 @@ CopilotKit web app ──AG-UI──► AG-UI Gateway ──► VoltAgent runtim
 | `packages/shared` | Shared TS types & AG-UI contracts |
 | `docs/` | Spec, architecture references, backlog |
 
+## Getting started
+
+```bash
+pnpm install      # install workspace deps (pnpm 10+, Node 20+)
+pnpm build        # build shared → agents → gateway → web (topological)
+pnpm verify       # build + typecheck + lint + test
+
+pnpm dev:gateway  # NestJS AG-UI gateway on http://localhost:4000
+pnpm dev:web      # CopilotKit web app on http://localhost:5173
+```
+
+Smoke check (with the gateway running):
+
+```bash
+curl http://localhost:4000/health
+curl -N "http://localhost:4000/agui/stream?prompt=Should%20we%20move%20gRPC%20to%20Trial%3F"
+```
+
 ## For AI coding agents
 
 Start with **[`AGENTS.md`](AGENTS.md)** (canonical context), then the task
 **[backlog](docs/backlog.md)** and the full **[spec](docs/spec.md)**.
 
-> Status: greenfield. Docs and skeleton are in place; the monorepo tooling and packages are
-> scaffolded in **Phase 0** of the backlog.
+> Status: **Phase 0 complete** — pnpm workspace, strict TS, ESLint/Prettier, Vitest, CI, the
+> four scaffolded packages, and an end-to-end AG-UI SSE smoke are in place. Phase 1 is next.
