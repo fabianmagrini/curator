@@ -1,6 +1,6 @@
 import { Injectable, type MessageEvent } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { runPlanner, type AgUiEvent } from '@curator/agents';
+import { runEvaluation, type AgUiEvent } from '@curator/agents';
 
 /**
  * Bridges the agent runtime to the AG-UI SSE transport. For Phase 0 it simply
@@ -11,13 +11,13 @@ import { runPlanner, type AgUiEvent } from '@curator/agents';
 @Injectable()
 export class AgUiService {
   /** Stream one agent run as a sequence of AG-UI events over SSE. */
-  streamRun(prompt: string): Observable<MessageEvent> {
+  streamRun(prompt: string, technologyId?: string): Observable<MessageEvent> {
     return new Observable<MessageEvent>((subscriber) => {
       let cancelled = false;
 
       void (async () => {
         try {
-          for await (const event of runPlanner({ prompt })) {
+          for await (const event of runEvaluation({ prompt, technologyId })) {
             if (cancelled) return;
             subscriber.next(this.toMessageEvent(event));
           }

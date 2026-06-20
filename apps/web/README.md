@@ -22,10 +22,12 @@ UI** streamed over AG-UI.
 
 ## Status
 
-Phase 0: Vite + React + Tailwind shell with an AG-UI SSE client (`src/lib/agui-client.ts`)
-and a smoke UI that renders the raw event stream from the gateway. shadcn-ready (`cn` helper
-in `src/lib/utils.ts`, `@/*` path alias) but no components installed yet. CopilotKit
-integration and the generative-UI components land in Phase 1. Run with `pnpm dev:web`
-(port 5173; set `VITE_GATEWAY_URL` to point at the gateway).
+Phase 1 thin slice: a read-only radar (`components/RadarVisualization.tsx`, rings × quadrants
+from seeded data) alongside live agent reasoning streamed as generative UI — the
+`GenerativeUi` dispatcher renders `DimensionEvidencePanel` and `RingChangeProposalCard` from
+the AG-UI stream, with a HITL approval banner. Still uses the direct AG-UI SSE client
+(`src/lib/agui-client.ts`); **CopilotKit** hosting and the remaining components
+(`SignalTimeline`, `AgentDebateView`) are a later slice. shadcn-ready (`cn`, `@/*` alias).
+Run with `pnpm dev:web` (port 5173; set `VITE_GATEWAY_URL` to point at the gateway).
 
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §9`.

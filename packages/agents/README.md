@@ -20,9 +20,11 @@ reaches consensus, and proposes radar changes — emitting typed AG-UI events as
 
 ## Status
 
-Phase 0: a **no-op planner** (`src/planner.ts`) emits a representative AG-UI stream
-(`TOOL_CALL_START` → `GENERATIVE_UI` → `APPROVAL_REQUIRED` → `FINAL_RESPONSE`) as an
-`AsyncGenerator<AgUiEvent>`. The real VoltAgent workflow + VoltOps tracing plug in behind
-that same contract — see the integration note at the top of `planner.ts`.
+Phase 1 (deterministic/seeded): `runEvaluation` (`src/evaluation.ts`) runs the real pipeline
+shape — signal ingestion (`profiles.ts`) → five dimension agents (each a
+`DimensionEvidencePanel`) → Consensus & Scoring (`consensus.ts` → `RingChangeProposal`) —
+emitting an ordered AG-UI stream as an `AsyncGenerator<AgUiEvent>`. Scoring is deterministic
+over seeded data; real VoltAgent + VoltOps reasoning plugs in behind the same contract
+(ADR-0006). HITL still emits `APPROVAL_REQUIRED` without blocking yet (Phase 2).
 
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §6, §9.4, §10`.

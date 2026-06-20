@@ -27,19 +27,23 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
 
 ## Phase 1 — Internal radar + read-only generative UI (spec §14 Phase 1)
 
-- [ ] `[shared]` Finalize AG-UI event contracts: `TOOL_CALL_START`, `PROGRESS`,
+> **Thin vertical slice landed** (gRPC end-to-end, deterministic/seeded): agents pipeline →
+> gateway stream → web generative UI. Remaining Phase 1 work is deepening each layer.
+
+- [x] `[shared]` Finalize AG-UI event contracts: `TOOL_CALL_START`, `PROGRESS`,
       `STATE_UPDATE`, `GENERATIVE_UI`, `APPROVAL_REQUIRED`, `FINAL_RESPONSE`.
-- [ ] `[agents]` Implement Signal Ingestion Agent (manual/seeded sources) → `TechnologySignal` (spec §6.1).
-- [ ] `[agents]` Implement Value / Risk / Cost / Operability / Strategic Fit agents (spec §6.2–6.6),
-      each emitting a `DimensionEvidencePanel` payload.
-- [ ] `[agents]` Implement Consensus & Scoring Agent producing the proposal JSON (spec §6.7).
+- [x] `[agents]` Implement Signal Ingestion Agent (manual/seeded sources) → `TechnologySignal` (spec §6.1).
+- [x] `[agents]` Implement Value / Risk / Cost / Operability / Strategic Fit agents (spec §6.2–6.6),
+      each emitting a `DimensionEvidencePanel` payload. _Deterministic/seeded; LLM reasoning later (ADR-0006)._
+- [x] `[agents]` Implement Consensus & Scoring Agent producing the proposal JSON (spec §6.7).
 - [ ] `[gw]` AG-UI gateway: session management, event routing, event persistence (Postgres),
-      audit logging (spec §5, §11).
+      audit logging (spec §5, §11). _Still a relay; persistence deferred._
 - [ ] `[web]` Integrate CopilotKit: `CopilotSidebar`, `useCopilotReadable` for radar/selection
-      state, `useCopilotAction` for UI navigation (spec §9.2).
+      state, `useCopilotAction` for UI navigation (spec §9.2). _Deferred; direct AG-UI SSE client for now._
 - [ ] `[web]` Generative UI components: `RadarVisualization`, `RingChangeProposalCard`,
       `DimensionEvidencePanel`, `SignalTimeline`, `AgentDebateView` (spec §9.3).
-- [ ] `[web]` Render the radar read-only (Adopt/Trial/Assess/Hold × quadrants).
+      _Done: RadarVisualization, RingChangeProposalCard, DimensionEvidencePanel. Todo: SignalTimeline, AgentDebateView._
+- [x] `[web]` Render the radar read-only (Adopt/Trial/Assess/Hold × quadrants).
 
 ## Phase 2 — Automated ingestion + HITL approvals (spec §14 Phase 2)
 
