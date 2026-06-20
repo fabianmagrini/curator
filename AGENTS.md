@@ -150,6 +150,35 @@ Write an ADR in `docs/adr/` whenever a decision meets any of these criteria:
 An ADR does not need to be long. Two or three sentences per section is enough if the
 reasoning is clear. The goal is to make the _why_ recoverable without reading git history.
 
+## Testing & Documentation Standards
+
+### Testing
+
+- **Runner:** Vitest. Colocate tests as `*.test.ts(x)` beside the code they cover; the root
+  config picks up `packages/*/src/**` and `apps/*/src/**`.
+- **Test behavior and contracts, not framework glue.** Prioritize domain logic (scoring,
+  consensus, signal normalization), the AG-UI event contract (discriminated-union narrowing,
+  event ordering, JSON-serializability), and agent output shape. Don't write tests that only
+  exercise NestJS DI or React render plumbing.
+- **Change the contract, change its tests in the same commit.** When you touch the AG-UI
+  events or domain model in `packages/shared`, extend the usage/type tests there alongside.
+- **Web component tests need a jsdom environment**, which isn't configured yet — add a
+  per-package Vitest config when the first component test lands.
+- **`pnpm verify` must pass before every commit** (build + typecheck + lint + format:check +
+  test); it mirrors CI.
+
+### Documentation
+
+- **Exported types and public functions carry brief TSDoc.** In `packages/shared`, cite the
+  authoritative spec section (e.g. `spec §9.4`) so the contract stays traceable.
+- **Keep docs in sync with code in the same change:** the relevant package `README.md`
+  (scope/scripts/status), `AGENTS.md` (conventions/status), and `docs/backlog.md` (check off
+  completed tasks).
+- **`docs/spec.md` is the source of truth for behavior; ADRs for decisions.** If code and the
+  spec diverge, the spec wins — fix the code or update the spec and flag it.
+- **Prefer updating existing docs over adding new ones.** Keep prose short and link rather
+  than duplicate.
+
 ## Glossary
 
 - **AG-UI** — Agent ↔ Human protocol (typed streaming events: messages, tool calls, state
