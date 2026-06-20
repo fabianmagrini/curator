@@ -87,7 +87,7 @@ boundaries — read it before adding code there.
   kebab-case for file names except React components (PascalCase `.tsx`).
 - **Boundaries:** `apps/web` may depend on `packages/shared` only — never on
   `packages/agents` or `apps/gateway` source. Cross-layer communication is via AG-UI.
-- **Tests:** colocate `*.test.ts(x)` next to source; **Vitest** is the runner.
+- **Tests:** see [Testing & Documentation Standards](#testing--documentation-standards).
 - **Commits:** small, scoped, conventional-style (`feat:`, `fix:`, `docs:`, `chore:`).
 - **Branching model — commit straight to `main`.** While this is a solo/greenfield repo we
   do **not** use feature branches or PRs: run `pnpm verify` locally, then commit and push to
@@ -162,8 +162,9 @@ reasoning is clear. The goal is to make the _why_ recoverable without reading gi
   exercise NestJS DI or React render plumbing.
 - **Change the contract, change its tests in the same commit.** When you touch the AG-UI
   events or domain model in `packages/shared`, extend the usage/type tests there alongside.
-- **Web component tests need a jsdom environment**, which isn't configured yet — add a
-  per-package Vitest config when the first component test lands.
+- **Web component tests run under jsdom** via `apps/web/vitest.config.ts` (React Testing
+  Library + `@testing-library/jest-dom`); `packages/*` and the gateway run under `node`. The
+  root `vitest.config.ts` wires these as Vitest projects, so `pnpm test` covers all of them.
 - **`pnpm verify` must pass before every commit** (build + typecheck + lint + format:check +
   test); it mirrors CI.
 
