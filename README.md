@@ -33,9 +33,13 @@ pnpm install      # install workspace deps (pnpm 10+, Node 20+)
 pnpm build        # build shared → agents → gateway → web (topological)
 pnpm verify       # build + typecheck + lint + test
 
+pnpm dev          # build libs, then run gateway (:4000) + web (:5173) together
+# or run them separately:
 pnpm dev:gateway  # NestJS AG-UI gateway on http://localhost:4000
 pnpm dev:web      # CopilotKit web app on http://localhost:5173
 ```
+
+Then open http://localhost:5173 and click **Evaluate gRPC**.
 
 Smoke check (with the gateway running):
 
