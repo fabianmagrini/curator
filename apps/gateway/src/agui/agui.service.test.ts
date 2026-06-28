@@ -11,7 +11,7 @@ function makeService() {
   const events = new InMemoryEventStore();
   const audit = new InMemoryAuditStore();
   const policy = new ApprovalPolicy();
-  return { service: new AgUiService(approvals, events, audit, policy), audit };
+  return { service: new AgUiService(approvals, events, audit, policy), events, audit };
 }
 
 /** Subscribe, auto-resolve the approval with `decision` as an architect, resolve on completion. */
@@ -53,6 +53,18 @@ describe('AgUiService approval brokering', () => {
     expect(entries[0]?.decision).toBe('approve');
     expect(entries[0]?.technologyId).toBe('grpc');
     expect(entries[0]?.approverRole).toBe('architect');
+  });
+
+  it('persists every streamed event under the run id, replayable in order', async () => {
+    const { service, events: store } = makeService();
+    const streamed = await runAndDecide(service, 'approve');
+
+    const runId = streamed[0]?.runId;
+    expect(runId).toBeDefined();
+    // The whole stream is keyed by the run id the client saw on every event.
+    const replay = await store.bySession(runId as string);
+    expect(replay.map((e) => e.seq)).toEqual(streamed.map((e) => e.seq));
+    expect(replay.at(-1)?.type).toBe('FINAL_RESPONSE');
   });
 
   it('records a reject decision and ends without publishing', async () => {

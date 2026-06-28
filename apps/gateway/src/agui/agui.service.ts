@@ -1,5 +1,4 @@
 import { Injectable, type MessageEvent } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
 import { Observable } from 'rxjs';
 import {
   runEvaluation,
@@ -32,10 +31,12 @@ export class AgUiService {
     private readonly policy: ApprovalPolicy,
   ) {}
 
-  /** Stream one agent run as AG-UI events over SSE, persisting each event. */
+  /**
+   * Stream one agent run as AG-UI events over SSE, persisting each event under the
+   * run's own `runId` (the session id the client sees on every event), so the
+   * stream can be replayed via `GET /agui/sessions/:id/events`.
+   */
   streamRun(prompt: string, technologyId?: string): Observable<MessageEvent> {
-    const sessionId = randomUUID();
-
     return new Observable<MessageEvent>((subscriber) => {
       let cancelled = false;
       let pendingApprovalId: string | null = null;
@@ -49,7 +50,7 @@ export class AgUiService {
           })) {
             if (cancelled) return;
             if (event.type === 'APPROVAL_REQUIRED') pendingApprovalId = event.approvalId;
-            await this.events.append(sessionId, event);
+            await this.events.append(event.runId, event);
             subscriber.next(this.toMessageEvent(event));
           }
           subscriber.complete();
