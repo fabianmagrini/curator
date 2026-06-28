@@ -27,3 +27,4 @@ the consequences we accept.
 | [0007](0007-pnpm-monorepo-strict-ts-shared-types.md)  | pnpm workspace monorepo, strict TS, shared types package            | Accepted |
 | [0008](0008-sse-transport-for-ag-ui.md)               | SSE as the default AG-UI transport                                  | Accepted |
 | [0009](0009-nestjs-for-the-gateway.md)                | NestJS for the AG-UI gateway                                        | Accepted |
+| [0010](0010-gateway-dev-runner-decorator-metadata.md) | Run the gateway dev server from compiled output, not tsx            | Accepted |
