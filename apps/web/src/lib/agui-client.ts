@@ -1,6 +1,13 @@
-import type { AgUiEvent, ApprovalDecision } from '@curator/shared';
+import type { AgUiEvent, ApprovalDecision, ApproverRole } from '@curator/shared';
 
 const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL ?? 'http://localhost:4000';
+
+/**
+ * Role this client acts as when resolving approvals. Until real auth lands, the
+ * demo acts as the architecture group so the approval flow works end-to-end; the
+ * gateway is the authority that enforces it (spec §12, ADR-0014).
+ */
+const APPROVER_ROLE: ApproverRole = 'architect';
 
 export interface StreamHandlers {
   onEvent: (event: AgUiEvent) => void;
@@ -61,7 +68,7 @@ export async function resolveApproval(
 ): Promise<void> {
   const response = await fetch(new URL(`/agui/approvals/${approvalId}`, GATEWAY_URL), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'x-approver-role': APPROVER_ROLE },
     body: JSON.stringify({ decision, ...input }),
   });
   if (!response.ok) {

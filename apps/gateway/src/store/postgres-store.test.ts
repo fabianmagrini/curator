@@ -43,11 +43,13 @@ describe.skipIf(!url)('Postgres stores', () => {
       fromRing: 'Assess',
       toRing: 'Trial',
       decision: 'approve',
+      approverRole: 'architect',
       rationale: 'looks good',
     });
 
     const entry = (await store.all()).find((e) => e.approvalId === approvalId);
     expect(entry?.decision).toBe('approve');
+    expect(entry?.approverRole).toBe('architect');
     expect(entry?.rationale).toBe('looks good');
   });
 });

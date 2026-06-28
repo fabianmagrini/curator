@@ -52,7 +52,9 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
 - [ ] `[gw]` MCP gateway: tool registry, policy enforcement, secret management (spec §5).
 - [x] `[gw]` Approval brokering: `APPROVAL_REQUIRED` lifecycle; agent blocks until resolved (spec §10).
       _Agent blocks via an injected await hook; `POST /agui/approvals/:id` resolves it (ADR-0011)._
-- [ ] `[gw]` Server-side approval policy: who may approve which rings/quadrants (spec §10, §12). _No authz yet._
+- [x] `[gw]` Server-side approval policy: who may approve which rings/quadrants (spec §10, §12).
+      _Role gate enforced at the gateway: `ApproverRole` via `x-approver-role` header, architects
+      approve any ring change, engineers denied (403); approver role recorded in the audit (ADR-0014)._
 - [x] `[web]` HITL approval card via `renderAndWaitForResponse`: editable rationale,
       dissent capture, Approve/Modify/Reject (spec §10). _Custom `ApprovalCard` posting to the
       gateway (not CopilotKit's primitive yet)._
