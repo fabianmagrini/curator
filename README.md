@@ -55,6 +55,6 @@ Start with **[`AGENTS.md`](AGENTS.md)** (canonical context), then the task
 **[ADRs](docs/adr/)** record why the architecture is the way it is — consult them before
 changing cross-cutting structure.
 
-> Status: **Phase 0 complete**, plus a **Phase 1 thin vertical slice** — a deterministic,
-> seeded evaluation runs end-to-end for gRPC (agents → gateway → web generative UI). Remaining
-> Phase 1 work (CopilotKit, gateway persistence, more components) is tracked in the backlog.
+> Status: **Phase 0 & Phase 1 complete** — a deterministic, seeded evaluation runs end-to-end
+> (agents → gateway → web generative UI) with HITL approval, gateway persistence, and an opt-in
+> CopilotKit sidebar (Gemini-backed, `GOOGLE_API_KEY`). Phase 2+ work is tracked in the backlog.

@@ -15,6 +15,8 @@ interface RadarVisualizationProps {
   selectedId?: string;
   /** When provided, chips become buttons that select a technology. */
   onSelect?: (technologyId: string) => void;
+  /** When set, emphasizes the matching ring row (driven by the Copilot action). */
+  highlightedRing?: RadarRing | null;
 }
 
 /** Read-only radar: rings (rows) × quadrants (columns), with selection + proposed move. */
@@ -23,6 +25,7 @@ export function RadarVisualization({
   proposedMove,
   selectedId,
   onSelect,
+  highlightedRing,
 }: RadarVisualizationProps) {
   const quadrants = QUADRANTS.filter((q) =>
     technologies.some((tech) => categoryQuadrant(tech.category) === q),
@@ -45,7 +48,13 @@ export function RadarVisualization({
         </thead>
         <tbody>
           {RADAR_RINGS.map((ring) => (
-            <tr key={ring} className="border-t border-gray-200 dark:border-gray-700">
+            <tr
+              key={ring}
+              className={cn(
+                'border-t border-gray-200 dark:border-gray-700',
+                highlightedRing === ring && 'bg-amber-50 dark:bg-amber-950/40',
+              )}
+            >
               <th scope="row" className="p-2 text-left align-top font-semibold">
                 {ring}
               </th>

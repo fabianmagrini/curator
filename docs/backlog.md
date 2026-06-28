@@ -40,9 +40,11 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
       audit logging (spec §5, §11). _Sessions + event/audit persistence behind interfaces;
       in-memory by default, **Postgres when `DATABASE_URL` is set** (ADR-0012, ADR-0013). Each
       run is persisted under its `runId` and replayable via `GET /agui/sessions/:id/events`._
-- [ ] `[web]` Integrate CopilotKit: `CopilotSidebar`, `useCopilotReadable` for radar/selection
-      state, `useCopilotAction` for UI navigation (spec §9.2). _Deferred (LLM-gated); for now a
-      direct AG-UI SSE client + a technology picker / clickable-radar selection._
+- [x] `[web]` Integrate CopilotKit: `CopilotSidebar`, `useCopilotReadable` for radar/selection
+      state, `useCopilotAction` for UI navigation (spec §9.2). _Opt-in: gateway hosts the CopilotKit
+      runtime (`POST /copilotkit`) backed by Gemini when `GOOGLE_API_KEY` is set; web mounts the
+      sidebar when `VITE_COPILOT_RUNTIME_URL` is set, else the direct AG-UI SSE client. Readable =
+      radar/selection; actions = `selectTechnology`/`highlightRing` (ADR-0015)._
 - [x] `[web]` Generative UI components: `RadarVisualization`, `RingChangeProposalCard`,
       `DimensionEvidencePanel`, `SignalTimeline`, `AgentDebateView` (spec §9.3).
 - [x] `[web]` Render the radar read-only (Adopt/Trial/Assess/Hold × quadrants).

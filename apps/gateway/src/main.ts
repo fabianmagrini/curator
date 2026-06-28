@@ -13,6 +13,7 @@ async function bootstrap(): Promise<void> {
   await app.listen(PORT);
   Logger.log(`AG-UI gateway listening on http://localhost:${PORT}`, 'Bootstrap');
   Logger.log(`persistence: ${process.env.DATABASE_URL ? 'postgres' : 'in-memory'}`, 'Bootstrap');
+  Logger.log(`copilot: ${process.env.GOOGLE_API_KEY ? 'gemini' : 'disabled'}`, 'Bootstrap');
 }
 
 void bootstrap();

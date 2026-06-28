@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_GATEWAY_URL?: string;
+  readonly VITE_COPILOT_RUNTIME_URL?: string;
 }
 
 interface ImportMeta {
