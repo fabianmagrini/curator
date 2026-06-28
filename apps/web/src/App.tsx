@@ -1,10 +1,21 @@
 import { useMemo, useState } from 'react';
-import type { AgUiEvent, GenerativeUiEvent, RingChangeProposal } from '@curator/shared';
+import type {
+  AgUiEvent,
+  ApprovalDecision,
+  GenerativeUiEvent,
+  RingChangeProposal,
+} from '@curator/shared';
 import { SEED_TECHNOLOGIES, findTechnology } from '@curator/shared';
-import { streamRun } from './lib/agui-client.js';
+import { resolveApproval, streamRun, type ApprovalInput } from './lib/agui-client.js';
 import { GenerativeUi } from './components/GenerativeUi.js';
 import { RadarVisualization } from './components/RadarVisualization.js';
+import { ApprovalCard } from './components/ApprovalCard.js';
 import { cn } from './lib/utils.js';
+
+interface PendingApproval {
+  approvalId: string;
+  proposal: RingChangeProposal;
+}
 
 /**
  * Phase 1 web slice: read-only radar with selection + a technology picker, and a
@@ -15,13 +26,18 @@ export function App() {
   const [selectedId, setSelectedId] = useState('grpc');
   const [events, setEvents] = useState<AgUiEvent[]>([]);
   const [proposal, setProposal] = useState<RingChangeProposal | null>(null);
+  const [approval, setApproval] = useState<PendingApproval | null>(null);
+  const [finalMessage, setFinalMessage] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
+  const [resolving, setResolving] = useState(false);
 
   const selectedName = findTechnology(selectedId)?.name ?? selectedId;
 
   const run = (): void => {
     setEvents([]);
     setProposal(null);
+    setApproval(null);
+    setFinalMessage(null);
     setRunning(true);
     streamRun(
       `Should we re-evaluate ${selectedName}?`,
@@ -29,12 +45,16 @@ export function App() {
         onEvent: (event) => {
           setEvents((prev) => [...prev, event]);
           if (event.type === 'APPROVAL_REQUIRED') {
+            setApproval({ approvalId: event.approvalId, proposal: event.proposal });
             setProposal(event.proposal);
           } else if (
             event.type === 'GENERATIVE_UI' &&
             event.payload.component === 'RingChangeProposalCard'
           ) {
             setProposal(event.payload.proposal);
+          } else if (event.type === 'FINAL_RESPONSE') {
+            setApproval(null);
+            setFinalMessage(event.message);
           }
         },
         onDone: () => setRunning(false),
@@ -44,11 +64,23 @@ export function App() {
     );
   };
 
+  const decide = async (decision: ApprovalDecision, input: ApprovalInput): Promise<void> => {
+    if (!approval) return;
+    setResolving(true);
+    try {
+      await resolveApproval(approval.approvalId, decision, input);
+    } catch {
+      setResolving(false);
+      return;
+    }
+    // The gateway unblocks the run; FINAL_RESPONSE clears the approval.
+    setResolving(false);
+  };
+
   const genUiEvents = useMemo(
     () => events.filter((e): e is GenerativeUiEvent => e.type === 'GENERATIVE_UI'),
     [events],
   );
-  const approvalPending = events.some((e) => e.type === 'APPROVAL_REQUIRED');
   const proposedMove = proposal
     ? { technologyId: proposal.technologyId, fromRing: proposal.fromRing, toRing: proposal.toRing }
     : undefined;
@@ -110,11 +142,14 @@ export function App() {
             Agent reasoning
           </h2>
 
-          {approvalPending && (
-            <div className="mb-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">
-              Approval required — a human must approve this ring change before it can be published
-              (HITL).
-            </div>
+          {approval && (
+            <ApprovalCard proposal={approval.proposal} busy={resolving} onDecision={decide} />
+          )}
+
+          {finalMessage && (
+            <p className="mb-3 rounded-md border border-gray-200 bg-gray-50 p-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+              {finalMessage}
+            </p>
           )}
 
           <div className="space-y-3">

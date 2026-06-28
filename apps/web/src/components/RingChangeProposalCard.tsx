@@ -1,16 +1,11 @@
-import { useState } from 'react';
-import type { ApprovalDecision, RingChangeProposalCardPayload } from '@curator/shared';
-import { cn } from '../lib/utils.js';
-
-const DECISIONS: readonly ApprovalDecision[] = ['approve', 'modify', 'reject'];
+import type { RingChangeProposalCardPayload } from '@curator/shared';
 
 /**
- * The Consensus Agent's ring-change proposal with HITL controls. Approval
- * brokering is not yet wired (Phase 2) — the buttons record a local-only choice.
+ * The Consensus Agent's ring-change proposal (display-only). The actionable HITL
+ * controls live in `ApprovalCard`, since approval is brokered by the gateway.
  */
 export function RingChangeProposalCard({ payload }: { payload: RingChangeProposalCardPayload }) {
   const { proposal } = payload;
-  const [decision, setDecision] = useState<ApprovalDecision | null>(null);
 
   return (
     <div className="rounded-lg border-2 border-emerald-500/40 p-4">
@@ -39,29 +34,6 @@ export function RingChangeProposalCard({ payload }: { payload: RingChangeProposa
       )}
 
       <p className="mt-2 text-xs text-gray-500">Next review: {proposal.reviewDate}</p>
-
-      <div className="mt-3 flex gap-2">
-        {DECISIONS.map((d) => (
-          <button
-            key={d}
-            type="button"
-            onClick={() => setDecision(d)}
-            className={cn(
-              'rounded-md border px-3 py-1 text-sm capitalize',
-              decision === d
-                ? 'border-emerald-500 bg-emerald-500 text-white'
-                : 'border-gray-300 dark:border-gray-600',
-            )}
-          >
-            {d}
-          </button>
-        ))}
-      </div>
-      {decision && (
-        <p className="mt-2 text-xs text-amber-600">
-          Recorded “{decision}” locally — approval brokering arrives in Phase 2 (not persisted).
-        </p>
-      )}
     </div>
   );
 }

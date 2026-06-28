@@ -21,9 +21,12 @@ agent runtime over AG-UI.
 
 ## Status
 
-Phase 0: NestJS app with `GET /health` and an SSE `GET /agui/stream?prompt=…` endpoint that
-relays the agents' AG-UI event stream. Run with `pnpm dev:gateway` (defaults to port 4000;
-override with `PORT` / `WEB_ORIGIN`). Auth, persistence, audit, and approval brokering are
-Phase 1–2.
+NestJS control plane. Endpoints: `GET /health`; SSE `GET /agui/stream?prompt=…&technologyId=…`
+(streams a run and **blocks at the approval gate**); `POST /agui/approvals/:id`
+(`{ decision, rationale?, dissent? }`) to resolve it; `GET /agui/audit` for the decision trail.
+Per-session event persistence + audit are **in-memory behind interfaces** (`EventStore`,
+`AuditStore`) — real Postgres deferred (ADR-0012); approval brokering blocks the agent run via
+an injected await hook (ADR-0011). Run with `pnpm dev:gateway` (port 4000; `PORT` / `WEB_ORIGIN`).
+Still missing: authn/authz, server-side approval policy, MCP, rate limiting.
 
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §5, §10, §11, §12`.

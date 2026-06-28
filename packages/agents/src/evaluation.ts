@@ -8,6 +8,8 @@ import {
   EVALUATION_DIMENSIONS,
   findTechnology,
   type AgUiEvent,
+  type ApprovalResolution,
+  type RingChangeProposal,
   type SignalTimelinePoint,
   type Technology,
 } from '@curator/shared';
@@ -15,11 +17,23 @@ import { randomRunId } from './ids.js';
 import { getProfile, type EvaluationProfile } from './profiles.js';
 import { buildDebate, runConsensus } from './consensus.js';
 
+/**
+ * Injected by the gateway to broker human approval: the run blocks on this
+ * promise after emitting `APPROVAL_REQUIRED` and resumes when a human resolves
+ * it (ADR-0004). Omitted in standalone use, in which case the run does not block.
+ */
+export type AwaitApproval = (request: {
+  approvalId: string;
+  proposal: RingChangeProposal;
+}) => Promise<ApprovalResolution>;
+
 export interface EvaluationRequest {
   /** Free-text reviewer prompt, e.g. "Should we move gRPC to Trial?". */
   prompt: string;
   /** Technology to evaluate; defaults to the gRPC example. */
   technologyId?: string;
+  /** When provided, the run blocks for human approval before finishing. */
+  awaitApproval?: AwaitApproval;
 }
 
 function resolveTechnology(technologyId: string): Technology {
@@ -120,20 +134,70 @@ export async function* runEvaluation(request: EvaluationRequest): AsyncGenerator
     payload: { component: 'RingChangeProposalCard', proposal },
   };
 
+  const approvalId = `${runId}-approval-0`;
+  // Register the wait *before* announcing the gate, so a resolution that arrives
+  // immediately after the event can't race ahead of registration.
+  const approvalPromise = request.awaitApproval?.({ approvalId, proposal });
+
   yield {
     type: 'APPROVAL_REQUIRED',
     runId,
     seq: seq++,
     timestamp: now(),
-    approvalId: `${runId}-approval-0`,
+    approvalId,
     proposal,
   };
+
+  if (!approvalPromise) {
+    // Standalone: don't block; report the proposal awaits a human.
+    yield {
+      type: 'FINAL_RESPONSE',
+      runId,
+      seq: seq++,
+      timestamp: now(),
+      message: `Proposed ${proposal.fromRing} → ${proposal.toRing} for ${technology.name}; awaiting human approval.`,
+    };
+    return;
+  }
+
+  // Block until a human resolves the approval (the gateway brokers this).
+  const resolution = await approvalPromise;
+
+  if (resolution.decision === 'approve') {
+    yield {
+      type: 'STATE_UPDATE',
+      runId,
+      seq: seq++,
+      timestamp: now(),
+      key: 'radar.published',
+      value: { technologyId: technology.id, ring: proposal.toRing },
+    };
+    yield {
+      type: 'FINAL_RESPONSE',
+      runId,
+      seq: seq++,
+      timestamp: now(),
+      message: `Approved — ${technology.name} published to ${proposal.toRing}.`,
+    };
+    return;
+  }
+
+  if (resolution.decision === 'reject') {
+    yield {
+      type: 'FINAL_RESPONSE',
+      runId,
+      seq: seq++,
+      timestamp: now(),
+      message: `Rejected — ${technology.name} stays at ${proposal.fromRing}.`,
+    };
+    return;
+  }
 
   yield {
     type: 'FINAL_RESPONSE',
     runId,
     seq: seq++,
     timestamp: now(),
-    message: `Proposed ${proposal.fromRing} → ${proposal.toRing} for ${technology.name}; awaiting human approval.`,
+    message: `Changes requested for ${technology.name} — proposal sent back to the agents.`,
   };
 }

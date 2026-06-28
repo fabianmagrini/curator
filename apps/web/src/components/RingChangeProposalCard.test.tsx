@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { fireEvent } from '@testing-library/dom';
 import type { RingChangeProposalCardPayload } from '@curator/shared';
 import { RingChangeProposalCard } from './RingChangeProposalCard.js';
 
@@ -19,7 +18,7 @@ const payload: RingChangeProposalCardPayload = {
 };
 
 describe('RingChangeProposalCard', () => {
-  it('renders the proposal details', () => {
+  it('renders the proposal details (display-only)', () => {
     render(<RingChangeProposalCard payload={payload} />);
 
     expect(screen.getByRole('heading', { name: 'gRPC' })).toBeInTheDocument();
@@ -27,12 +26,8 @@ describe('RingChangeProposalCard', () => {
     expect(screen.getByText('Trial')).toBeInTheDocument();
     expect(screen.getByText(/open source, modest migration cost/i)).toBeInTheDocument();
     expect(screen.getByText(/2026-12-01/)).toBeInTheDocument();
-  });
 
-  it('records a local-only decision when a button is clicked', () => {
-    render(<RingChangeProposalCard payload={payload} />);
-
-    fireEvent.click(screen.getByRole('button', { name: /approve/i }));
-    expect(screen.getByText(/not persisted/i)).toBeInTheDocument();
+    // Actions live in ApprovalCard, not here.
+    expect(screen.queryByRole('button')).toBeNull();
   });
 });

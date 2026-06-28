@@ -56,4 +56,45 @@ describe('runEvaluation', () => {
     const events = await collect('totally-unknown-tech');
     expect(events.at(-1)?.type).toBe('FINAL_RESPONSE');
   });
+
+  it('blocks on awaitApproval and emits a publish + approved final on approve', async () => {
+    const events: AgUiEvent[] = [];
+    let approvalCalls = 0;
+
+    for await (const event of runEvaluation({
+      prompt: 'evaluate',
+      technologyId: 'grpc',
+      awaitApproval: async ({ approvalId }) => {
+        approvalCalls += 1;
+        return { approvalId, decision: 'approve', rationale: 'looks good' };
+      },
+    })) {
+      events.push(event);
+    }
+
+    expect(approvalCalls).toBe(1);
+    // The gate is announced, then the run publishes and finishes after approval.
+    const approvalIndex = events.findIndex((e) => e.type === 'APPROVAL_REQUIRED');
+    const publishIndex = events.findIndex(
+      (e) => e.type === 'STATE_UPDATE' && e.key === 'radar.published',
+    );
+    expect(approvalIndex).toBeGreaterThanOrEqual(0);
+    expect(publishIndex).toBeGreaterThan(approvalIndex);
+
+    const final = events.at(-1);
+    expect(final?.type === 'FINAL_RESPONSE' && final.message).toMatch(/approved/i);
+  });
+
+  it('reflects a reject decision in the final response', async () => {
+    const events: AgUiEvent[] = [];
+    for await (const event of runEvaluation({
+      prompt: 'evaluate',
+      technologyId: 'grpc',
+      awaitApproval: async ({ approvalId }) => ({ approvalId, decision: 'reject' }),
+    })) {
+      events.push(event);
+    }
+    const final = events.at(-1);
+    expect(final?.type === 'FINAL_RESPONSE' && final.message).toMatch(/rejected/i);
+  });
 });

@@ -1,4 +1,4 @@
-import type { AgUiEvent } from '@curator/shared';
+import type { AgUiEvent, ApprovalDecision } from '@curator/shared';
 
 const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL ?? 'http://localhost:4000';
 
@@ -43,4 +43,28 @@ export function streamRun(
   };
 
   return () => source.close();
+}
+
+export interface ApprovalInput {
+  rationale?: string;
+  dissent?: string;
+}
+
+/**
+ * Resolve a pending HITL approval at the gateway. The gateway records the
+ * decision and unblocks the agent run, which then streams its final response.
+ */
+export async function resolveApproval(
+  approvalId: string,
+  decision: ApprovalDecision,
+  input: ApprovalInput = {},
+): Promise<void> {
+  const response = await fetch(new URL(`/agui/approvals/${approvalId}`, GATEWAY_URL), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ decision, ...input }),
+  });
+  if (!response.ok) {
+    throw new Error(`Approval failed: ${response.status}`);
+  }
 }
