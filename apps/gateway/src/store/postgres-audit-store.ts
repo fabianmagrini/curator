@@ -8,6 +8,7 @@ interface AuditRow {
   from_ring: string;
   to_ring: string;
   decision: string;
+  approver_role: string;
   rationale: string | null;
   dissent: string | null;
 }
@@ -31,9 +32,16 @@ export class PostgresAuditStore extends AuditStore {
            from_ring TEXT NOT NULL,
            to_ring TEXT NOT NULL,
            decision TEXT NOT NULL,
+           approver_role TEXT NOT NULL DEFAULT 'architect',
            rationale TEXT,
            dissent TEXT
          )`,
+      )
+      // Backfill the column on tables created before ADR-0014.
+      .then(() =>
+        this.pool.query(
+          `ALTER TABLE agui_audit ADD COLUMN IF NOT EXISTS approver_role TEXT NOT NULL DEFAULT 'architect'`,
+        ),
       )
       .then(() => undefined);
     return this.ready;
@@ -42,8 +50,8 @@ export class PostgresAuditStore extends AuditStore {
   async record(entry: AuditEntry): Promise<void> {
     await this.ensureSchema();
     await this.pool.query(
-      `INSERT INTO agui_audit (ts, approval_id, technology_id, from_ring, to_ring, decision, rationale, dissent)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      `INSERT INTO agui_audit (ts, approval_id, technology_id, from_ring, to_ring, decision, approver_role, rationale, dissent)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
         entry.timestamp,
         entry.approvalId,
@@ -51,6 +59,7 @@ export class PostgresAuditStore extends AuditStore {
         entry.fromRing,
         entry.toRing,
         entry.decision,
+        entry.approverRole,
         entry.rationale ?? null,
         entry.dissent ?? null,
       ],
@@ -60,7 +69,7 @@ export class PostgresAuditStore extends AuditStore {
   async all(): Promise<readonly AuditEntry[]> {
     await this.ensureSchema();
     const result = await this.pool.query<AuditRow>(
-      `SELECT ts, approval_id, technology_id, from_ring, to_ring, decision, rationale, dissent
+      `SELECT ts, approval_id, technology_id, from_ring, to_ring, decision, approver_role, rationale, dissent
        FROM agui_audit ORDER BY id`,
     );
     return result.rows.map((row) => ({
@@ -70,6 +79,7 @@ export class PostgresAuditStore extends AuditStore {
       fromRing: row.from_ring as AuditEntry['fromRing'],
       toRing: row.to_ring as AuditEntry['toRing'],
       decision: row.decision as AuditEntry['decision'],
+      approverRole: row.approver_role as AuditEntry['approverRole'],
       rationale: row.rationale ?? undefined,
       dissent: row.dissent ?? undefined,
     }));

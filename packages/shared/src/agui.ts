@@ -91,3 +91,12 @@ export interface ApprovalResolution {
   /** Dissent captured even when approving. */
   dissent?: string;
 }
+
+/**
+ * Who is acting on an approval gate. Authorization is enforced server-side at
+ * the gateway, never in the browser (spec §12). Until full authN lands, the role
+ * travels in the `x-approver-role` request header (ADR-0014).
+ */
+export type ApproverRole = 'engineer' | 'architect';
+
+export const APPROVER_ROLES: readonly ApproverRole[] = ['engineer', 'architect'] as const;

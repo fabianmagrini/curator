@@ -1,10 +1,22 @@
 import { Injectable, type MessageEvent } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { Observable } from 'rxjs';
-import { runEvaluation, type AgUiEvent, type ApprovalResolution } from '@curator/agents';
+import {
+  runEvaluation,
+  type AgUiEvent,
+  type ApprovalResolution,
+  type ApproverRole,
+} from '@curator/agents';
 import { ApprovalRegistry } from './approval-registry.js';
+import { ApprovalPolicy } from './approval-policy.js';
 import { EventStore } from '../store/event-store.js';
 import { AuditStore } from '../store/audit-store.js';
+
+/** Outcome of resolving an approval: success, unknown id, or policy denial. */
+export type ResolveOutcome =
+  | { status: 'ok' }
+  | { status: 'not_found' }
+  | { status: 'forbidden'; reason: string };
 
 /**
  * Bridges the agent runtime to the AG-UI SSE transport and owns the control-plane
@@ -17,6 +29,7 @@ export class AgUiService {
     private readonly approvals: ApprovalRegistry,
     private readonly events: EventStore,
     private readonly audit: AuditStore,
+    private readonly policy: ApprovalPolicy,
   ) {}
 
   /** Stream one agent run as AG-UI events over SSE, persisting each event. */
@@ -53,12 +66,21 @@ export class AgUiService {
   }
 
   /**
-   * Resolve a pending approval (called from the controller). Records an immutable
-   * audit entry *before* unblocking the run. Returns false if the id is unknown.
+   * Resolve a pending approval (called from the controller). Enforces the
+   * server-side approval policy, then records an immutable audit entry *before*
+   * unblocking the run. A denied decision leaves the run blocked and writes no
+   * audit entry (only authorized decisions are part of the record).
    */
-  async resolveApproval(approvalId: string, resolution: ApprovalResolution): Promise<boolean> {
+  async resolveApproval(
+    approvalId: string,
+    role: ApproverRole,
+    resolution: ApprovalResolution,
+  ): Promise<ResolveOutcome> {
     const proposal = this.approvals.proposalFor(approvalId);
-    if (!proposal) return false;
+    if (!proposal) return { status: 'not_found' };
+
+    const verdict = this.policy.canApprove(role, proposal);
+    if (!verdict.allowed) return { status: 'forbidden', reason: verdict.reason };
 
     await this.audit.record({
       timestamp: new Date().toISOString(),
@@ -67,11 +89,12 @@ export class AgUiService {
       fromRing: proposal.fromRing,
       toRing: proposal.toRing,
       decision: resolution.decision,
+      approverRole: role,
       rationale: resolution.rationale,
       dissent: resolution.dissent,
     });
     this.approvals.resolve(approvalId, resolution);
-    return true;
+    return { status: 'ok' };
   }
 
   private toMessageEvent(event: AgUiEvent): MessageEvent {

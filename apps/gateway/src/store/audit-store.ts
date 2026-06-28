@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { ApprovalDecision, RadarRing } from '@curator/agents';
+import type { ApprovalDecision, ApproverRole, RadarRing } from '@curator/agents';
 
 /** An immutable record of a human approval decision (spec §11, §12). */
 export interface AuditEntry {
@@ -9,6 +9,8 @@ export interface AuditEntry {
   fromRing: RadarRing;
   toRing: RadarRing;
   decision: ApprovalDecision;
+  /** Role that authorized the decision — the governance "who" (spec §12, ADR-0014). */
+  approverRole: ApproverRole;
   rationale?: string;
   dissent?: string;
 }

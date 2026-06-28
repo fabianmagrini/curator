@@ -31,3 +31,4 @@ the consequences we accept.
 | [0011](0011-gateway-approval-brokering.md)              | Gateway brokers HITL approval via an injected await hook            | Accepted |
 | [0012](0012-in-memory-persistence-postgres-deferred.md) | In-memory gateway persistence behind interfaces; Postgres deferred  | Accepted |
 | [0013](0013-postgres-gateway-persistence.md)            | Postgres-backed gateway persistence (opt-in via DATABASE_URL)       | Accepted |
+| [0014](0014-server-side-approval-policy.md)             | Server-side approval policy gates who may resolve ring changes      | Accepted |
