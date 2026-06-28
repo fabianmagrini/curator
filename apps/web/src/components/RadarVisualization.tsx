@@ -11,10 +11,19 @@ interface ProposedMove {
 interface RadarVisualizationProps {
   technologies: readonly Technology[];
   proposedMove?: ProposedMove;
+  /** Currently selected technology (highlighted). */
+  selectedId?: string;
+  /** When provided, chips become buttons that select a technology. */
+  onSelect?: (technologyId: string) => void;
 }
 
-/** Read-only radar: rings (rows) × quadrants (columns), with any proposed move flagged. */
-export function RadarVisualization({ technologies, proposedMove }: RadarVisualizationProps) {
+/** Read-only radar: rings (rows) × quadrants (columns), with selection + proposed move. */
+export function RadarVisualization({
+  technologies,
+  proposedMove,
+  selectedId,
+  onSelect,
+}: RadarVisualizationProps) {
   const quadrants = QUADRANTS.filter((q) =>
     technologies.some((tech) => categoryQuadrant(tech.category) === q),
   );
@@ -50,18 +59,29 @@ export function RadarVisualization({ technologies, proposedMove }: RadarVisualiz
                       )
                       .map((tech) => {
                         const moving = proposedMove?.technologyId === tech.id;
-                        return (
-                          <span
+                        const selected = selectedId === tech.id;
+                        const label = `${tech.name}${moving ? ` → ${proposedMove.toRing}` : ''}`;
+                        const className = cn(
+                          'rounded px-1.5 py-0.5 text-xs',
+                          moving
+                            ? 'bg-emerald-100 font-semibold text-emerald-800 ring-1 ring-emerald-400'
+                            : selected
+                              ? 'bg-sky-100 font-semibold text-sky-800 ring-1 ring-sky-400'
+                              : 'bg-gray-100 dark:bg-gray-800',
+                        );
+
+                        return onSelect ? (
+                          <button
                             key={tech.id}
-                            className={cn(
-                              'rounded px-1.5 py-0.5 text-xs',
-                              moving
-                                ? 'bg-emerald-100 font-semibold text-emerald-800 ring-1 ring-emerald-400'
-                                : 'bg-gray-100 dark:bg-gray-800',
-                            )}
+                            type="button"
+                            onClick={() => onSelect(tech.id)}
+                            className={cn(className, 'cursor-pointer')}
                           >
-                            {tech.name}
-                            {moving ? ` → ${proposedMove.toRing}` : ''}
+                            {label}
+                          </button>
+                        ) : (
+                          <span key={tech.id} className={className}>
+                            {label}
                           </span>
                         );
                       })}

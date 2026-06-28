@@ -21,10 +21,11 @@ reaches consensus, and proposes radar changes — emitting typed AG-UI events as
 ## Status
 
 Phase 1 (deterministic/seeded): `runEvaluation` (`src/evaluation.ts`) runs the real pipeline
-shape — signal ingestion (`profiles.ts`) → five dimension agents (each a
-`DimensionEvidencePanel`) → Consensus & Scoring (`consensus.ts` → `RingChangeProposal`) —
-emitting an ordered AG-UI stream as an `AsyncGenerator<AgUiEvent>`. Scoring is deterministic
-over seeded data; real VoltAgent + VoltOps reasoning plugs in behind the same contract
-(ADR-0006). HITL still emits `APPROVAL_REQUIRED` without blocking yet (Phase 2).
+shape — signal ingestion (`profiles.ts`, emitting a `SignalTimeline`) → five dimension agents
+(each a `DimensionEvidencePanel`) → Consensus & Scoring (`consensus.ts` → `RingChangeProposal`,
+plus an `AgentDebateView` when the dimensions disagree) — as an ordered
+`AsyncGenerator<AgUiEvent>`. Scoring is deterministic over seeded data; real VoltAgent +
+VoltOps reasoning plugs in behind the same contract (ADR-0006). HITL still emits
+`APPROVAL_REQUIRED` without blocking yet (Phase 2).
 
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §6, §9.4, §10`.

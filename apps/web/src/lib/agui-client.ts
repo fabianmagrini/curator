@@ -15,9 +15,16 @@ export interface StreamHandlers {
  * This is the only contract between the UI and the agents — the browser never
  * talks to the agent runtime directly (spec §5, §9.5).
  */
-export function streamRun(prompt: string, handlers: StreamHandlers): () => void {
+export function streamRun(
+  prompt: string,
+  handlers: StreamHandlers,
+  technologyId?: string,
+): () => void {
   const url = new URL('/agui/stream', GATEWAY_URL);
   url.searchParams.set('prompt', prompt);
+  if (technologyId) {
+    url.searchParams.set('technologyId', technologyId);
+  }
 
   const source = new EventSource(url);
 

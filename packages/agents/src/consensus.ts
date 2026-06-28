@@ -3,12 +3,16 @@
  * dimension scores into a ring recommendation, confidence, and key drivers/risks.
  */
 import type {
+  AgentDebateViewPayload,
   EvaluationDimension,
   RadarRing,
   RingChangeProposal,
   Technology,
 } from '@curator/shared';
 import type { EvaluationProfile } from './profiles.js';
+
+/** Dimension-score spread above which the agents are considered to disagree. */
+const CONFLICT_THRESHOLD = 0.3;
 
 const WEIGHTS: Record<EvaluationDimension, number> = {
   Value: 0.25,
@@ -69,5 +73,42 @@ export function runConsensus(
     keyDrivers,
     keyRisks,
     reviewDate: reviewDateIso(),
+  };
+}
+
+/**
+ * Surface a debate when the dimension agents disagree (spec §9.3 AgentDebateView).
+ * Returns `null` when the dimensions broadly agree, so the UI only shows dissent
+ * when it exists.
+ */
+export function buildDebate(
+  technology: Technology,
+  profile: EvaluationProfile,
+  consensusRing: RadarRing,
+): AgentDebateViewPayload | null {
+  const dimensions = Object.entries(profile.dimensions) as [
+    EvaluationDimension,
+    EvaluationProfile['dimensions'][EvaluationDimension],
+  ][];
+
+  const scores = dimensions.map(([, p]) => p.score);
+  const spread = Math.max(...scores) - Math.min(...scores);
+  if (spread < CONFLICT_THRESHOLD) return null;
+
+  const positions = dimensions.map(([dimension, p]) => ({
+    dimension,
+    stance: p.summary,
+    proposedRing: favorabilityToRing(p.score),
+  }));
+  const pointsOfDisagreement = positions
+    .filter((pos) => pos.proposedRing !== consensusRing)
+    .map((pos) => `${pos.dimension} alone points to ${pos.proposedRing}`);
+
+  return {
+    component: 'AgentDebateView',
+    technologyId: technology.id,
+    positions,
+    pointsOfDisagreement,
+    resolution: `Weighted aggregation across all five dimensions settled on ${consensusRing}.`,
   };
 }

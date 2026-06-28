@@ -39,10 +39,10 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
 - [ ] `[gw]` AG-UI gateway: session management, event routing, event persistence (Postgres),
       audit logging (spec §5, §11). _Still a relay; persistence deferred._
 - [ ] `[web]` Integrate CopilotKit: `CopilotSidebar`, `useCopilotReadable` for radar/selection
-      state, `useCopilotAction` for UI navigation (spec §9.2). _Deferred; direct AG-UI SSE client for now._
-- [ ] `[web]` Generative UI components: `RadarVisualization`, `RingChangeProposalCard`,
+      state, `useCopilotAction` for UI navigation (spec §9.2). _Deferred (LLM-gated); for now a
+      direct AG-UI SSE client + a technology picker / clickable-radar selection._
+- [x] `[web]` Generative UI components: `RadarVisualization`, `RingChangeProposalCard`,
       `DimensionEvidencePanel`, `SignalTimeline`, `AgentDebateView` (spec §9.3).
-      _Done: RadarVisualization, RingChangeProposalCard, DimensionEvidencePanel. Todo: SignalTimeline, AgentDebateView._
 - [x] `[web]` Render the radar read-only (Adopt/Trial/Assess/Hold × quadrants).
 
 ## Phase 2 — Automated ingestion + HITL approvals (spec §14 Phase 2)

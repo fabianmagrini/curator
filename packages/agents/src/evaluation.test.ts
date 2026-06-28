@@ -30,6 +30,17 @@ describe('runEvaluation', () => {
       (e) => e.type === 'GENERATIVE_UI' && e.payload.component === 'RingChangeProposalCard',
     );
     expect(proposals).toHaveLength(1);
+
+    const timelines = events.filter(
+      (e) => e.type === 'GENERATIVE_UI' && e.payload.component === 'SignalTimeline',
+    );
+    expect(timelines).toHaveLength(1);
+
+    // gRPC's dimension scores span >0.3, so a debate is surfaced.
+    const debates = events.filter(
+      (e) => e.type === 'GENERATIVE_UI' && e.payload.component === 'AgentDebateView',
+    );
+    expect(debates).toHaveLength(1);
   });
 
   it('blocks for approval before the final response (HITL gate)', async () => {

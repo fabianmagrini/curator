@@ -1,6 +1,8 @@
 import type { GenerativeUiPayload } from '@curator/shared';
 import { DimensionEvidencePanel } from './DimensionEvidencePanel.js';
 import { RingChangeProposalCard } from './RingChangeProposalCard.js';
+import { SignalTimeline } from './SignalTimeline.js';
+import { AgentDebateView } from './AgentDebateView.js';
 
 /**
  * Maps an agent-emitted generative-UI payload to its React component. This is the
@@ -12,6 +14,10 @@ export function GenerativeUi({ payload }: { payload: GenerativeUiPayload }) {
       return <DimensionEvidencePanel payload={payload} />;
     case 'RingChangeProposalCard':
       return <RingChangeProposalCard payload={payload} />;
+    case 'SignalTimeline':
+      return <SignalTimeline payload={payload} />;
+    case 'AgentDebateView':
+      return <AgentDebateView payload={payload} />;
     default:
       return (
         <div className="text-xs text-gray-400">Unsupported component: {payload.component}</div>

@@ -8,11 +8,12 @@ import {
   EVALUATION_DIMENSIONS,
   findTechnology,
   type AgUiEvent,
+  type SignalTimelinePoint,
   type Technology,
 } from '@curator/shared';
 import { randomRunId } from './ids.js';
-import { getProfile } from './profiles.js';
-import { runConsensus } from './consensus.js';
+import { getProfile, type EvaluationProfile } from './profiles.js';
+import { buildDebate, runConsensus } from './consensus.js';
 
 export interface EvaluationRequest {
   /** Free-text reviewer prompt, e.g. "Should we move gRPC to Trial?". */
@@ -32,10 +33,22 @@ function resolveTechnology(technologyId: string): Technology {
   );
 }
 
+function toTimelinePoints(profile: EvaluationProfile): SignalTimelinePoint[] {
+  return profile.signals
+    .map((signal) => ({
+      timestamp: signal.timestamp.toISOString(),
+      source: signal.source,
+      strength: signal.strength,
+    }))
+    .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+}
+
 /** Run one evaluation, yielding AG-UI events in order. */
 export async function* runEvaluation(request: EvaluationRequest): AsyncGenerator<AgUiEvent> {
   const technology = resolveTechnology(request.technologyId ?? 'grpc');
   const profile = getProfile(technology.id);
+  const proposal = runConsensus(technology, profile);
+  const debate = buildDebate(technology, profile, proposal.toRing);
 
   const runId = randomRunId();
   let seq = 0;
@@ -59,6 +72,18 @@ export async function* runEvaluation(request: EvaluationRequest): AsyncGenerator
     ratio: 0.2,
   };
 
+  yield {
+    type: 'GENERATIVE_UI',
+    runId,
+    seq: seq++,
+    timestamp: now(),
+    payload: {
+      component: 'SignalTimeline',
+      technologyId: technology.id,
+      points: toTimelinePoints(profile),
+    },
+  };
+
   for (const dimension of EVALUATION_DIMENSIONS) {
     const p = profile.dimensions[dimension];
     yield {
@@ -77,7 +102,15 @@ export async function* runEvaluation(request: EvaluationRequest): AsyncGenerator
     };
   }
 
-  const proposal = runConsensus(technology, profile);
+  if (debate) {
+    yield {
+      type: 'GENERATIVE_UI',
+      runId,
+      seq: seq++,
+      timestamp: now(),
+      payload: debate,
+    };
+  }
 
   yield {
     type: 'GENERATIVE_UI',

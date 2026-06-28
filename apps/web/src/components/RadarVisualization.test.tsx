@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { fireEvent } from '@testing-library/dom';
 import { SEED_TECHNOLOGIES } from '@curator/shared';
 import { RadarVisualization } from './RadarVisualization.js';
 
@@ -21,5 +22,13 @@ describe('RadarVisualization', () => {
     );
 
     expect(screen.getByText(/gRPC → Trial/)).toBeInTheDocument();
+  });
+
+  it('calls onSelect when a chip is clicked', () => {
+    const onSelect = vi.fn();
+    render(<RadarVisualization technologies={SEED_TECHNOLOGIES} onSelect={onSelect} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'React' }));
+    expect(onSelect).toHaveBeenCalledWith('react');
   });
 });
