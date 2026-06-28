@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
-import type { ApproverRole } from '@curator/agents';
+import type { AgUiEvent, ApproverRole } from '@curator/agents';
 import { AgUiController } from './agui.controller.js';
 import { ApprovalPolicy } from './approval-policy.js';
 import type { AgUiService, ResolveOutcome } from './agui.service.js';
+import { InMemoryEventStore } from '../store/event-store.js';
 import type { AuditStore } from '../store/audit-store.js';
 
 /**
@@ -13,9 +14,10 @@ import type { AuditStore } from '../store/audit-store.js';
 function makeController(outcome: ResolveOutcome) {
   const resolveApproval = vi.fn(async () => outcome);
   const service = { resolveApproval } as unknown as AgUiService;
+  const events = new InMemoryEventStore();
   const audit = { all: vi.fn() } as unknown as AuditStore;
-  const controller = new AgUiController(service, new ApprovalPolicy(), audit);
-  return { controller, resolveApproval };
+  const controller = new AgUiController(service, new ApprovalPolicy(), events, audit);
+  return { controller, resolveApproval, events };
 }
 
 const okBody = { decision: 'approve', rationale: 'looks good' };
@@ -67,5 +69,26 @@ describe('AgUiController.resolveApproval', () => {
     await expect(controller.resolveApproval('missing', okBody, 'architect')).rejects.toBeInstanceOf(
       NotFoundException,
     );
+  });
+});
+
+describe('AgUiController.sessionEvents', () => {
+  function progressEvent(runId: string, seq: number): AgUiEvent {
+    return { type: 'PROGRESS', runId, seq, timestamp: '2026-06-28T00:00:00.000Z', message: 'hi' };
+  }
+
+  it('replays a run’s persisted events in order', async () => {
+    const { controller, events } = makeController({ status: 'ok' });
+    await events.append('run-1', progressEvent('run-1', 0));
+    await events.append('run-1', progressEvent('run-1', 1));
+    await events.append('run-2', progressEvent('run-2', 0));
+
+    const replay = await controller.sessionEvents('run-1');
+    expect(replay.map((e) => e.seq)).toEqual([0, 1]);
+  });
+
+  it('returns 404 for a session with no persisted events', async () => {
+    const { controller } = makeController({ status: 'ok' });
+    await expect(controller.sessionEvents('unknown')).rejects.toBeInstanceOf(NotFoundException);
   });
 });

@@ -13,9 +13,10 @@ import {
   type MessageEvent,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import type { ApprovalDecision } from '@curator/agents';
+import type { AgUiEvent, ApprovalDecision } from '@curator/agents';
 import { AgUiService } from './agui.service.js';
 import { ApprovalPolicy } from './approval-policy.js';
+import { EventStore } from '../store/event-store.js';
 import { AuditStore, type AuditEntry } from '../store/audit-store.js';
 
 const DECISIONS: readonly ApprovalDecision[] = ['approve', 'modify', 'reject'];
@@ -31,6 +32,7 @@ export class AgUiController {
   constructor(
     private readonly aguiService: AgUiService,
     private readonly policy: ApprovalPolicy,
+    private readonly events: EventStore,
     private readonly audit: AuditStore,
   ) {}
 
@@ -79,6 +81,20 @@ export class AgUiController {
       throw new ForbiddenException(outcome.reason);
     }
     return { ok: true };
+  }
+
+  /**
+   * Replay the persisted AG-UI event stream for one run, in order (spec §5, §11).
+   * The session id is the run's `runId`, which the client sees on every streamed
+   * event. `GET /agui/sessions/:id/events`
+   */
+  @Get('sessions/:id/events')
+  async sessionEvents(@Param('id') id: string): Promise<readonly AgUiEvent[]> {
+    const events = await this.events.bySession(id);
+    if (events.length === 0) {
+      throw new NotFoundException('no events for that session');
+    }
+    return events;
   }
 
   /** The immutable audit trail of approval decisions. `GET /agui/audit` */
