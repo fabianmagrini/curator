@@ -23,13 +23,18 @@ export class ApprovalRegistry {
     });
   }
 
-  /** Resolve a pending approval. Returns the proposal, or null if unknown. */
-  resolve(approvalId: string, resolution: ApprovalResolution): RingChangeProposal | null {
+  /** The proposal awaiting decision for an id, if any (without resolving it). */
+  proposalFor(approvalId: string): RingChangeProposal | undefined {
+    return this.pending.get(approvalId)?.proposal;
+  }
+
+  /** Resolve a pending approval. Returns false if the id is unknown. */
+  resolve(approvalId: string, resolution: ApprovalResolution): boolean {
     const entry = this.pending.get(approvalId);
-    if (!entry) return null;
+    if (!entry) return false;
     this.pending.delete(approvalId);
     entry.resolve(resolution);
-    return entry.proposal;
+    return true;
   }
 
   /** Abandon a pending approval (e.g. the client disconnected). */

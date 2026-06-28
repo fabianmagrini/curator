@@ -14,23 +14,24 @@ export interface AuditEntry {
 }
 
 /**
- * Append-only audit trail of approval decisions. Abstract so the in-memory
- * implementation can be swapped for a durable store later (ADR-0012).
+ * Append-only audit trail of approval decisions. Abstract + async so the
+ * in-memory implementation can be swapped for Postgres (ADR-0012, ADR-0013).
  */
 export abstract class AuditStore {
-  abstract record(entry: AuditEntry): void;
-  abstract all(): readonly AuditEntry[];
+  abstract record(entry: AuditEntry): Promise<void>;
+  abstract all(): Promise<readonly AuditEntry[]>;
 }
 
 @Injectable()
 export class InMemoryAuditStore extends AuditStore {
   private readonly entries: AuditEntry[] = [];
 
-  record(entry: AuditEntry): void {
+  record(entry: AuditEntry): Promise<void> {
     this.entries.push(entry);
+    return Promise.resolve();
   }
 
-  all(): readonly AuditEntry[] {
-    return this.entries;
+  all(): Promise<readonly AuditEntry[]> {
+    return Promise.resolve(this.entries);
   }
 }

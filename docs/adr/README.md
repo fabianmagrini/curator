@@ -30,3 +30,4 @@ the consequences we accept.
 | [0010](0010-gateway-dev-runner-decorator-metadata.md)   | Run the gateway dev server from compiled output, not tsx            | Accepted |
 | [0011](0011-gateway-approval-brokering.md)              | Gateway brokers HITL approval via an injected await hook            | Accepted |
 | [0012](0012-in-memory-persistence-postgres-deferred.md) | In-memory gateway persistence behind interfaces; Postgres deferred  | Accepted |
+| [0013](0013-postgres-gateway-persistence.md)            | Postgres-backed gateway persistence (opt-in via DATABASE_URL)       | Accepted |

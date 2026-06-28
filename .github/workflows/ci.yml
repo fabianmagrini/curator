@@ -13,6 +13,20 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: curator_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v7
 
@@ -40,3 +54,6 @@ jobs:
 
       - name: Test
         run: pnpm test
+        env:
+          # Exercises the Postgres-backed stores; without this the PG tests skip.
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/curator_test

@@ -36,7 +36,7 @@ export class AgUiService {
           })) {
             if (cancelled) return;
             if (event.type === 'APPROVAL_REQUIRED') pendingApprovalId = event.approvalId;
-            this.events.append(sessionId, event);
+            await this.events.append(sessionId, event);
             subscriber.next(this.toMessageEvent(event));
           }
           subscriber.complete();
@@ -54,13 +54,13 @@ export class AgUiService {
 
   /**
    * Resolve a pending approval (called from the controller). Records an immutable
-   * audit entry and unblocks the agent run. Returns false if the id is unknown.
+   * audit entry *before* unblocking the run. Returns false if the id is unknown.
    */
-  resolveApproval(approvalId: string, resolution: ApprovalResolution): boolean {
-    const proposal = this.approvals.resolve(approvalId, resolution);
+  async resolveApproval(approvalId: string, resolution: ApprovalResolution): Promise<boolean> {
+    const proposal = this.approvals.proposalFor(approvalId);
     if (!proposal) return false;
 
-    this.audit.record({
+    await this.audit.record({
       timestamp: new Date().toISOString(),
       approvalId,
       technologyId: proposal.technologyId,
@@ -70,6 +70,7 @@ export class AgUiService {
       rationale: resolution.rationale,
       dissent: resolution.dissent,
     });
+    this.approvals.resolve(approvalId, resolution);
     return true;
   }
 

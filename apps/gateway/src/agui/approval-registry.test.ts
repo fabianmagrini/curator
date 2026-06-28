@@ -18,16 +18,17 @@ describe('ApprovalRegistry', () => {
     const registry = new ApprovalRegistry();
     const waited = registry.wait('a1', proposal);
 
-    const returned = registry.resolve('a1', { approvalId: 'a1', decision: 'approve' });
-    expect(returned).toEqual(proposal);
+    expect(registry.proposalFor('a1')).toEqual(proposal);
+    expect(registry.resolve('a1', { approvalId: 'a1', decision: 'approve' })).toBe(true);
 
     await expect(waited).resolves.toEqual({ approvalId: 'a1', decision: 'approve' });
     expect(registry.isPending('a1')).toBe(false);
   });
 
-  it('returns null when resolving an unknown approval', () => {
+  it('returns false when resolving an unknown approval', () => {
     const registry = new ApprovalRegistry();
-    expect(registry.resolve('nope', { approvalId: 'nope', decision: 'approve' })).toBeNull();
+    expect(registry.resolve('nope', { approvalId: 'nope', decision: 'approve' })).toBe(false);
+    expect(registry.proposalFor('nope')).toBeUndefined();
   });
 
   it('rejects the waiting promise on cancel', async () => {

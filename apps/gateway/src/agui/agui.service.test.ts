@@ -21,7 +21,10 @@ function runAndDecide(service: AgUiService, decision: ApprovalDecision): Promise
         const event = msg.data as AgUiEvent;
         events.push(event);
         if (event.type === 'APPROVAL_REQUIRED') {
-          service.resolveApproval(event.approvalId, { approvalId: event.approvalId, decision });
+          void service.resolveApproval(event.approvalId, {
+            approvalId: event.approvalId,
+            decision,
+          });
         }
       },
       error: reject,
@@ -43,9 +46,10 @@ describe('AgUiService approval brokering', () => {
     expect(events.some((e) => e.type === 'STATE_UPDATE' && e.key === 'radar.published')).toBe(true);
 
     // One immutable audit entry recorded with the decision.
-    expect(audit.all()).toHaveLength(1);
-    expect(audit.all()[0]?.decision).toBe('approve');
-    expect(audit.all()[0]?.technologyId).toBe('grpc');
+    const entries = await audit.all();
+    expect(entries).toHaveLength(1);
+    expect(entries[0]?.decision).toBe('approve');
+    expect(entries[0]?.technologyId).toBe('grpc');
   });
 
   it('records a reject decision and ends without publishing', async () => {
@@ -53,15 +57,15 @@ describe('AgUiService approval brokering', () => {
     const events = await runAndDecide(service, 'reject');
 
     expect(events.some((e) => e.type === 'STATE_UPDATE')).toBe(false);
-    expect(audit.all()[0]?.decision).toBe('reject');
+    expect((await audit.all())[0]?.decision).toBe('reject');
     const final = events.at(-1);
     expect(final?.type === 'FINAL_RESPONSE' && final.message).toMatch(/rejected/i);
   });
 
-  it('reports unknown approvals', () => {
+  it('reports unknown approvals', async () => {
     const { service } = makeService();
-    expect(service.resolveApproval('missing', { approvalId: 'missing', decision: 'approve' })).toBe(
-      false,
-    );
+    await expect(
+      service.resolveApproval('missing', { approvalId: 'missing', decision: 'approve' }),
+    ).resolves.toBe(false);
   });
 });

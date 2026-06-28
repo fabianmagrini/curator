@@ -37,8 +37,8 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
       each emitting a `DimensionEvidencePanel` payload. _Deterministic/seeded; LLM reasoning later (ADR-0006)._
 - [x] `[agents]` Implement Consensus & Scoring Agent producing the proposal JSON (spec §6.7).
 - [x] `[gw]` AG-UI gateway: session management, event routing, event persistence (Postgres),
-      audit logging (spec §5, §11). _Sessions + event/audit persistence done **in-memory** behind
-      interfaces; real Postgres deferred (ADR-0012)._
+      audit logging (spec §5, §11). _Sessions + event/audit persistence behind interfaces;
+      in-memory by default, **Postgres when `DATABASE_URL` is set** (ADR-0012, ADR-0013)._
 - [ ] `[web]` Integrate CopilotKit: `CopilotSidebar`, `useCopilotReadable` for radar/selection
       state, `useCopilotAction` for UI navigation (spec §9.2). _Deferred (LLM-gated); for now a
       direct AG-UI SSE client + a technology picker / clickable-radar selection._

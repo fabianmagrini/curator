@@ -45,13 +45,16 @@ export class AgUiController {
 
   /** Resolve a pending human approval. `POST /agui/approvals/:id` */
   @Post('approvals/:id')
-  resolveApproval(@Param('id') id: string, @Body() body: ResolveApprovalBody): { ok: true } {
+  async resolveApproval(
+    @Param('id') id: string,
+    @Body() body: ResolveApprovalBody,
+  ): Promise<{ ok: true }> {
     const decision = body?.decision;
     if (!decision || !DECISIONS.includes(decision as ApprovalDecision)) {
       throw new BadRequestException(`decision must be one of: ${DECISIONS.join(', ')}`);
     }
 
-    const resolved = this.aguiService.resolveApproval(id, {
+    const resolved = await this.aguiService.resolveApproval(id, {
       approvalId: id,
       decision: decision as ApprovalDecision,
       rationale: body.rationale,
@@ -65,7 +68,7 @@ export class AgUiController {
 
   /** The immutable audit trail of approval decisions. `GET /agui/audit` */
   @Get('audit')
-  auditTrail(): readonly AuditEntry[] {
+  auditTrail(): Promise<readonly AuditEntry[]> {
     return this.audit.all();
   }
 }

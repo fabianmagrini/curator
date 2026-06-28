@@ -12,6 +12,7 @@ async function bootstrap(): Promise<void> {
   app.enableCors({ origin: WEB_ORIGIN });
   await app.listen(PORT);
   Logger.log(`AG-UI gateway listening on http://localhost:${PORT}`, 'Bootstrap');
+  Logger.log(`persistence: ${process.env.DATABASE_URL ? 'postgres' : 'in-memory'}`, 'Bootstrap');
 }
 
 void bootstrap();

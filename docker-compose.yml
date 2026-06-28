@@ -1,0 +1,16 @@
+# Local Postgres for the gateway. Start with: docker compose up -d
+# Then run the gateway with DATABASE_URL pointing at it (see .env.example).
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: curator
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
