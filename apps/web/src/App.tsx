@@ -3,6 +3,7 @@ import type {
   AgUiEvent,
   ApprovalDecision,
   GenerativeUiEvent,
+  RadarRing,
   RingChangeProposal,
 } from '@curator/shared';
 import { SEED_TECHNOLOGIES, findTechnology } from '@curator/shared';
@@ -10,6 +11,8 @@ import { resolveApproval, streamRun, type ApprovalInput } from './lib/agui-clien
 import { GenerativeUi } from './components/GenerativeUi.js';
 import { RadarVisualization } from './components/RadarVisualization.js';
 import { ApprovalCard } from './components/ApprovalCard.js';
+import { CopilotBindings } from './components/CopilotBindings.js';
+import { copilotConfig } from './lib/copilot.js';
 import { cn } from './lib/utils.js';
 
 interface PendingApproval {
@@ -30,7 +33,9 @@ export function App() {
   const [finalMessage, setFinalMessage] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [resolving, setResolving] = useState(false);
+  const [highlightedRing, setHighlightedRing] = useState<RadarRing | null>(null);
 
+  const { enabled: copilotEnabled } = copilotConfig();
   const selectedName = findTechnology(selectedId)?.name ?? selectedId;
 
   const run = (): void => {
@@ -133,6 +138,7 @@ export function App() {
             proposedMove={proposedMove}
             selectedId={selectedId}
             onSelect={setSelectedId}
+            highlightedRing={highlightedRing}
           />
           <p className="mt-2 text-xs text-gray-400">Tip: click a technology to select it.</p>
         </section>
@@ -164,6 +170,14 @@ export function App() {
           </div>
         </section>
       </div>
+
+      {copilotEnabled && (
+        <CopilotBindings
+          selectedId={selectedId}
+          onSelectTechnology={setSelectedId}
+          onHighlightRing={setHighlightedRing}
+        />
+      )}
     </main>
   );
 }

@@ -12,6 +12,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@copilotkit/react-core": "^1.61.2",
+    "@copilotkit/react-ui": "^1.61.2",
     "@curator/shared": "workspace:*",
     "clsx": "^2.1.1",
     "react": "^19.0.0",

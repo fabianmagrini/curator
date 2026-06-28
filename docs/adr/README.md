@@ -32,3 +32,4 @@ the consequences we accept.
 | [0012](0012-in-memory-persistence-postgres-deferred.md) | In-memory gateway persistence behind interfaces; Postgres deferred  | Accepted |
 | [0013](0013-postgres-gateway-persistence.md)            | Postgres-backed gateway persistence (opt-in via DATABASE_URL)       | Accepted |
 | [0014](0014-server-side-approval-policy.md)             | Server-side approval policy gates who may resolve ring changes      | Accepted |
+| [0015](0015-copilotkit-gemini-runtime.md)               | CopilotKit UX layer backed by a gated Gemini runtime                | Accepted |
