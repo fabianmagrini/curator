@@ -55,5 +55,6 @@ Start with **[`AGENTS.md`](AGENTS.md)** (canonical context), then the task
 **[ADRs](docs/adr/)** record why the architecture is the way it is — consult them before
 changing cross-cutting structure.
 
-> Status: **Phase 0 complete** — pnpm workspace, strict TS, ESLint/Prettier, Vitest, CI, the
-> four scaffolded packages, and an end-to-end AG-UI SSE smoke are in place. Phase 1 is next.
+> Status: **Phase 0 complete**, plus a **Phase 1 thin vertical slice** — a deterministic,
+> seeded evaluation runs end-to-end for gRPC (agents → gateway → web generative UI). Remaining
+> Phase 1 work (CopilotKit, gateway persistence, more components) is tracked in the backlog.

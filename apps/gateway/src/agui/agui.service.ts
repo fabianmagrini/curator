@@ -4,7 +4,7 @@ import { runEvaluation, type AgUiEvent } from '@curator/agents';
 
 /**
  * Bridges the agent runtime to the AG-UI SSE transport. For Phase 0 it simply
- * relays the no-op planner's event stream. Later this is where session
+ * relays the evaluation pipeline's event stream. Later this is where session
  * management, event persistence, audit logging, and approval brokering live
  * (spec §5, §10, §11).
  */

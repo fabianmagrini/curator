@@ -5,14 +5,6 @@
  */
 import type { EvaluationDimension, RadarRing, RingChangeProposal, SignalSource } from './domain.js';
 
-export type GenerativeUiComponentName =
-  | 'RingChangeProposalCard'
-  | 'DimensionEvidencePanel'
-  | 'AgentDebateView'
-  | 'RadarVisualization'
-  | 'SignalTimeline'
-  | 'DriftAlert';
-
 /** A citation backing a dimension score, with a deep link to the source. */
 export interface EvidenceCitation {
   source: SignalSource;
@@ -106,3 +98,6 @@ export type GenerativeUiPayload =
   | RadarVisualizationPayload
   | SignalTimelinePayload
   | DriftAlertPayload;
+
+/** The set of generative-UI component names, derived from the payload union. */
+export type GenerativeUiComponentName = GenerativeUiPayload['component'];

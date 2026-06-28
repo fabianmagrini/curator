@@ -13,11 +13,12 @@ backend evaluates technologies across Value, Risk, Cost, Operability, and Strate
 reaches consensus, and proposes radar changes for **human approval**. The UI renders the
 agents' reasoning as **generative UI** rather than static tables.
 
-**Status:** Phase 0 of the backlog is complete — the pnpm workspace, strict TypeScript,
-ESLint/Prettier, Vitest, CI, and runnable skeletons for all four packages are in place,
-with an end-to-end AG-UI SSE smoke path (web → gateway → agents). Your job as an agent is
-to flesh out the packages following the architecture below; start from `docs/backlog.md`
-Phase 1.
+**Status:** Phase 0 (foundation) is complete, and a Phase 1 **thin vertical slice** has
+landed: a deterministic, seeded evaluation runs end-to-end for one technology (gRPC) — agents
+pipeline → gateway SSE → web generative UI (radar + dimension panels + ring-change proposal +
+HITL banner). Remaining Phase 1 work deepens each layer; see `docs/backlog.md`. Deferred:
+CopilotKit hosting, gateway persistence (Postgres) + blocking approval brokering, and the
+`SignalTimeline` / `AgentDebateView` components.
 
 ## Architecture (layered, event-driven)
 
@@ -69,7 +70,7 @@ CopilotKit web app  ──AG-UI (SSE/WS)──►  AG-UI Gateway  ──►  Vol
 │   ├── web/                 # CopilotKit generative UI (Vite + React + Tailwind)
 │   └── gateway/             # NestJS AG-UI gateway (/health, SSE /agui/stream)
 └── packages/
-    ├── agents/              # VoltAgent multi-agent runtime (no-op planner today)
+    ├── agents/              # multi-agent runtime (deterministic pipeline; VoltAgent later)
     └── shared/              # shared TS types / AG-UI contracts
 ```
 
@@ -89,7 +90,7 @@ boundaries — read it before adding code there.
   `packages/agents` or `apps/gateway` source. Cross-layer communication is via AG-UI.
 - **Tests:** see [Testing & Documentation Standards](#testing--documentation-standards).
 - **Commits:** small, scoped, conventional-style (`feat:`, `fix:`, `docs:`, `chore:`).
-- **Branching model — commit straight to `main`.** While this is a solo/greenfield repo we
+- **Branching model — commit straight to `main`.** While this is a solo repo we
   do **not** use feature branches or PRs: run `pnpm verify` locally, then commit and push to
   `main`. CI re-runs the same checks on push. Keep `main` green; if a bad commit lands, fix
   it with a follow-up commit (revert-forward) rather than rewriting pushed history. Switch to

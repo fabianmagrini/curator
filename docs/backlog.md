@@ -22,7 +22,7 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
       `@/*` alias). _shadcn/ui component install deferred to Phase 1._
 - [x] `[gw]` Scaffold NestJS app with a health route and SSE endpoint stub.
 - [x] `[agents]` Scaffold a no-op planner agent emitting the AG-UI stream.
-      _Actual VoltAgent/VoltOps wiring marked as an integration point in `planner.ts`._
+      _Superseded in Phase 1 by the deterministic evaluation pipeline._
 - [x] `[repo]` End-to-end smoke: web connects to gateway, gateway streams AG-UI events.
 
 ## Phase 1 — Internal radar + read-only generative UI (spec §14 Phase 1)
