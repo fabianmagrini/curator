@@ -13,12 +13,15 @@ backend evaluates technologies across Value, Risk, Cost, Operability, and Strate
 reaches consensus, and proposes radar changes for **human approval**. The UI renders the
 agents' reasoning as **generative UI** rather than static tables.
 
-**Status:** Phase 0 (foundation) is complete, and a Phase 1 **thin vertical slice** has
-landed: a deterministic, seeded evaluation runs end-to-end for one technology (gRPC) — agents
-pipeline → gateway SSE → web generative UI (radar + dimension panels + ring-change proposal +
-HITL banner). Remaining Phase 1 work deepens each layer; see `docs/backlog.md`. Deferred:
-CopilotKit hosting, gateway persistence (Postgres) + blocking approval brokering, and the
-`SignalTimeline` / `AgentDebateView` components.
+**Status:** Phase 0 and Phase 1 are **complete**. A deterministic, seeded evaluation runs
+end-to-end (agents pipeline → gateway SSE → web generative UI) with the full generative-UI
+component set and a HITL approval gate. The gateway blocks the agent run on approval (ADR-0011),
+persists events + audit behind interfaces (in-memory by default, **Postgres when `DATABASE_URL`
+is set** — ADR-0012/0013), enforces a server-side approval policy (ADR-0014), and exposes
+session-event replay. CopilotKit is integrated as an **opt-in** UX layer on its v2 runtime,
+backed by Gemini and gated on `GOOGLE_API_KEY` (ADR-0015/0016); with no key the app runs its
+default direct-SSE experience. Phase 2+ (automated ingestion, MCP, authz, scheduled scans) is
+tracked in `docs/backlog.md`.
 
 ## Architecture (layered, event-driven)
 
@@ -68,7 +71,7 @@ CopilotKit web app  ──AG-UI (SSE/WS)──►  AG-UI Gateway  ──►  Vol
 │   └── adr/                 # architecture decision records (why the architecture is so)
 ├── apps/
 │   ├── web/                 # CopilotKit generative UI (Vite + React + Tailwind)
-│   └── gateway/             # NestJS AG-UI gateway (/health, SSE /agui/stream)
+│   └── gateway/             # NestJS AG-UI gateway (/health, /agui/*, opt-in /copilotkit)
 └── packages/
     ├── agents/              # multi-agent runtime (deterministic pipeline; VoltAgent later)
     └── shared/              # shared TS types / AG-UI contracts
@@ -90,12 +93,11 @@ boundaries — read it before adding code there.
   `packages/agents` or `apps/gateway` source. Cross-layer communication is via AG-UI.
 - **Tests:** see [Testing & Documentation Standards](#testing--documentation-standards).
 - **Commits:** small, scoped, conventional-style (`feat:`, `fix:`, `docs:`, `chore:`).
-- **Branching model — commit straight to `main`.** While this is a solo repo we
-  do **not** use feature branches or PRs: run `pnpm verify` locally, then commit and push to
-  `main`. CI re-runs the same checks on push. Keep `main` green; if a bad commit lands, fix
-  it with a follow-up commit (revert-forward) rather than rewriting pushed history. Switch to
-  PR-based review with branch protection when a second contributor (human or autonomous
-  agent landing unreviewed changes) joins.
+- **Branching model — feature branch → PR → merge.** Changes land through pull requests, not
+  direct commits to `main` (autonomous agents land work here, which is the trigger for review).
+  Branch from `main`, run `pnpm verify` locally, open a PR, then merge (squash/merge) once CI is
+  green. Keep `main` green; prefer revert-forward over rewriting pushed history. Each ADR-worthy
+  change carries its ADR in the same PR.
 
 ### Scripts (run from the repo root)
 

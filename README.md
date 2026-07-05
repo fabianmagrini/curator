@@ -46,7 +46,14 @@ Smoke check (with the gateway running):
 ```bash
 curl http://localhost:4000/health
 curl -N "http://localhost:4000/agui/stream?prompt=Should%20we%20move%20gRPC%20to%20Trial%3F"
+curl http://localhost:4000/agui/audit                 # decision trail
+curl -i -X POST http://localhost:4000/copilotkit      # 503 unless GOOGLE_API_KEY is set
 ```
+
+**Optional — CopilotKit sidebar (Gemini):** set `GOOGLE_API_KEY` (and optionally `GEMINI_MODEL`)
+on the gateway and `VITE_COPILOT_RUNTIME_URL=http://localhost:4000/copilotkit` on the web app to
+enable the opt-in chat sidebar; without them the app runs its default direct-SSE experience. See
+[`.env.example`](.env.example).
 
 ## For AI coding agents
 

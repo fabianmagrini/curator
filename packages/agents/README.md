@@ -25,7 +25,8 @@ shape — signal ingestion (`profiles.ts`, emitting a `SignalTimeline`) → five
 (each a `DimensionEvidencePanel`) → Consensus & Scoring (`consensus.ts` → `RingChangeProposal`,
 plus an `AgentDebateView` when the dimensions disagree) — as an ordered
 `AsyncGenerator<AgUiEvent>`. Scoring is deterministic over seeded data; real VoltAgent +
-VoltOps reasoning plugs in behind the same contract (ADR-0006). HITL still emits
-`APPROVAL_REQUIRED` without blocking yet (Phase 2).
+VoltOps reasoning plugs in behind the same contract (ADR-0006). On a ring change the run emits
+`APPROVAL_REQUIRED` and **blocks** on an injected `awaitApproval` hook until the gateway resolves
+the human decision, then emits the publish + decision-aware final (ADR-0011).
 
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §6, §9.4, §10`.
