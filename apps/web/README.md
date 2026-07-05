@@ -7,8 +7,8 @@ UI** streamed over AG-UI.
 
 **Owns**
 
-- CopilotKit integration: `CopilotSidebar`, `useCopilotReadable` (radar/selection state),
-  `useCopilotAction` (UI navigation), generative UI `render`, HITL approval cards.
+- CopilotKit v2 integration (opt-in): `CopilotSidebar`, `useAgentContext` (radar/selection
+  state), `useFrontendTool` (UI navigation), generative UI `render`, HITL approval cards.
 - Domain generative-UI components (spec §9.3): `RadarVisualization`,
   `RingChangeProposalCard`, `DimensionEvidencePanel`, `AgentDebateView`, `SignalTimeline`,
   `DriftAlert`.
@@ -27,7 +27,10 @@ technology picker and clickable-radar selection, alongside live agent reasoning 
 generative UI. The `GenerativeUi` dispatcher renders all five components —
 `SignalTimeline`, `DimensionEvidencePanel`, `AgentDebateView`, `RingChangeProposalCard`
 (`DriftAlert` is defined but not yet emitted) — with a HITL approval banner. Uses the direct
-AG-UI SSE client (`src/lib/agui-client.ts`); **CopilotKit** hosting is deferred (LLM-gated).
-shadcn-ready (`cn`, `@/*` alias). Run with `pnpm dev:web` (port 5173; set `VITE_GATEWAY_URL`).
+AG-UI SSE client (`src/lib/agui-client.ts`) by default. The **CopilotKit** sidebar is opt-in:
+set `VITE_COPILOT_RUNTIME_URL` (pointing at the gateway's `/copilotkit`) to mount the v2
+provider + `CopilotBindings` (lazy-loaded); otherwise the app renders without it.
+shadcn-ready (`cn`, `@/*` alias). Run with `pnpm dev:web` (port 5173; set `VITE_GATEWAY_URL`,
+optionally `VITE_COPILOT_RUNTIME_URL`).
 
 See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §9`.
