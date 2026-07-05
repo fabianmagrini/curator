@@ -13,12 +13,12 @@
   },
   "dependencies": {
     "@copilotkit/react-core": "^1.61.2",
-    "@copilotkit/react-ui": "^1.61.2",
     "@curator/shared": "workspace:*",
     "clsx": "^2.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",

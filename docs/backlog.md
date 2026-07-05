@@ -44,7 +44,8 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
       state, `useCopilotAction` for UI navigation (spec §9.2). _Opt-in: gateway hosts the CopilotKit
       runtime (`POST /copilotkit`) backed by Gemini when `GOOGLE_API_KEY` is set; web mounts the
       sidebar when `VITE_COPILOT_RUNTIME_URL` is set, else the direct AG-UI SSE client. Readable =
-      radar/selection; actions = `selectTechnology`/`highlightRing` (ADR-0015)._
+      radar/selection; actions = `selectTechnology`/`highlightRing`. On CopilotKit's v2 runtime
+      (`BuiltInAgent` + AI SDK), no eager peer SDKs (ADR-0015, ADR-0016)._
 - [x] `[web]` Generative UI components: `RadarVisualization`, `RingChangeProposalCard`,
       `DimensionEvidencePanel`, `SignalTimeline`, `AgentDebateView` (spec §9.3).
 - [x] `[web]` Render the radar read-only (Adopt/Trial/Assess/Hold × quadrants).
