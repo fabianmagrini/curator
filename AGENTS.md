@@ -93,11 +93,12 @@ boundaries — read it before adding code there.
   `packages/agents` or `apps/gateway` source. Cross-layer communication is via AG-UI.
 - **Tests:** see [Testing & Documentation Standards](#testing--documentation-standards).
 - **Commits:** small, scoped, conventional-style (`feat:`, `fix:`, `docs:`, `chore:`).
-- **Branching model — feature branch → PR → merge.** Changes land through pull requests, not
-  direct commits to `main` (autonomous agents land work here, which is the trigger for review).
-  Branch from `main`, run `pnpm verify` locally, open a PR, then merge (squash/merge) once CI is
-  green. Keep `main` green; prefer revert-forward over rewriting pushed history. Each ADR-worthy
-  change carries its ADR in the same PR.
+- **Branching model — commit straight to `main`.** While this is a solo repo we do **not** use
+  feature branches or PRs: run `pnpm verify` locally, then commit and push to `main`. CI re-runs
+  the same checks on push. Keep `main` green; if a bad commit lands, fix it with a follow-up
+  commit (revert-forward) rather than rewriting pushed history. Switch to PR-based review with
+  branch protection when a second contributor (human or autonomous agent landing unreviewed
+  changes) joins.
 
 ### Scripts (run from the repo root)
 
