@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from 'react';
 import type {
   AgUiEvent,
   ApprovalDecision,
@@ -11,9 +11,14 @@ import { resolveApproval, streamRun, type ApprovalInput } from './lib/agui-clien
 import { GenerativeUi } from './components/GenerativeUi.js';
 import { RadarVisualization } from './components/RadarVisualization.js';
 import { ApprovalCard } from './components/ApprovalCard.js';
-import { CopilotBindings } from './components/CopilotBindings.js';
 import { copilotConfig } from './lib/copilot.js';
 import { cn } from './lib/utils.js';
+
+// Lazy so the CopilotKit v2 bundle (and its CSS) loads only when the sidebar is
+// enabled — keeps it out of the default bundle and out of the provider-free tests.
+const CopilotBindings = lazy(() =>
+  import('./components/CopilotBindings.js').then((m) => ({ default: m.CopilotBindings })),
+);
 
 interface PendingApproval {
   approvalId: string;
@@ -172,11 +177,13 @@ export function App() {
       </div>
 
       {copilotEnabled && (
-        <CopilotBindings
-          selectedId={selectedId}
-          onSelectTechnology={setSelectedId}
-          onHighlightRing={setHighlightedRing}
-        />
+        <Suspense fallback={null}>
+          <CopilotBindings
+            selectedId={selectedId}
+            onSelectTechnology={setSelectedId}
+            onHighlightRing={setHighlightedRing}
+          />
+        </Suspense>
       )}
     </main>
   );
