@@ -63,7 +63,9 @@ Conventions: `[area]` tags map to packages — `web` = `apps/web`, `gw` = `apps/
       dissent capture, Approve/Modify/Reject (spec §10). _Custom `ApprovalCard` posting to the
       gateway (not CopilotKit's primitive yet)._
 - [x] `[gw]` Immutable audit trail of approvals/edits/rejections (spec §11, §12). _In-memory (ADR-0012)._
-- [ ] `[repo]` Scheduled scan job (weekly/monthly) driving the pipeline (spec §8).
+- [x] `[repo]` Scheduled scan job (weekly/monthly) driving the pipeline (spec §8). _Advisory
+      `runScan` drives the pipeline standalone and reports proposed ring changes without approving/
+      publishing (mandatory HITL preserved); `pnpm scan` runs it, cadence wired externally (ADR-0017)._
 
 ## Phase 3 — Cross-org benchmarking + A2A (spec §14 Phase 3)
 

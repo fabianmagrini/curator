@@ -21,6 +21,7 @@
     "dev": "pnpm --filter @curator/shared --filter @curator/agents build && pnpm --filter @curator/gateway --filter @curator/web --parallel run dev",
     "dev:gateway": "pnpm --filter @curator/gateway dev",
     "dev:web": "pnpm --filter @curator/web dev",
+    "scan": "pnpm --filter @curator/shared --filter @curator/agents build && node packages/agents/dist/scan.cli.js",
     "verify": "pnpm build && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test"
   },
   "devDependencies": {

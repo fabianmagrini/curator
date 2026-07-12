@@ -34,3 +34,4 @@ the consequences we accept.
 | [0014](0014-server-side-approval-policy.md)             | Server-side approval policy gates who may resolve ring changes      | Accepted |
 | [0015](0015-copilotkit-gemini-runtime.md)               | CopilotKit UX layer backed by a gated Gemini runtime                | Accepted |
 | [0016](0016-copilotkit-v2-runtime.md)                   | Adopt the CopilotKit v2 runtime                                     | Accepted |
+| [0017](0017-advisory-scheduled-scan.md)                 | Scheduled scans are advisory — they never auto-approve              | Accepted |

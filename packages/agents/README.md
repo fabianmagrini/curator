@@ -29,4 +29,8 @@ VoltOps reasoning plugs in behind the same contract (ADR-0006). On a ring change
 `APPROVAL_REQUIRED` and **blocks** on an injected `awaitApproval` hook until the gateway resolves
 the human decision, then emits the publish + decision-aware final (ADR-0011).
 
-See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §6, §9.4, §10`.
+`runScan` (`src/scan.ts`) drives the pipeline standalone across the radar and reports proposed
+ring changes **without approving or publishing** — an advisory scan for periodic review; run it
+with `pnpm scan` (cadence wired externally — ADR-0017, spec §8).
+
+See [`/AGENTS.md`](../../AGENTS.md) and `docs/spec.md §6, §8, §9.4, §10`.
